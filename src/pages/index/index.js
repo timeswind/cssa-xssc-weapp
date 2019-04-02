@@ -13,6 +13,10 @@ class IndexPage extends Component {
     navigationBarTitleText: 'CSSA 新生手册'
   }
 
+  state = {
+    year: new Date().getFullYear()
+  }
+
   componentWillMount() { }
 
   componentWillReact() {}
@@ -66,9 +70,14 @@ class IndexPage extends Component {
         </View>
         <View className="navigationcard_wrapper" style="margin: 16px;">
           <View className="navigationcard" onClick={() => this.navigate('/pages/xssc')}>
-            <Text style="font-weight: bold; color: #fff;display: block; font-size: 32px">新生手册2019</Text>
+            <Text style="font-weight: bold; color: #fff;display: block; font-size: 32px">新生手册{this.state.year}</Text>
             <Text style="font-weight: bold; color: #a02727"> CSSA学术部</Text>
-
+          </View>
+        </View>
+        <View className="navigationcard_wrapper" style="margin: 16px;margin-top:0;padding-top:0">
+          <View className="navigationcard" style="background:#ffc107;" onClick={() => this.navigate('/pages/major_wiki')}>
+            <Text style="font-weight: bold; color: #fff;display: block; font-size: 32px">专业百科</Text>
+            <Text style="font-weight: bold; color: #ffecb3"> CSSA宣传部</Text>
           </View>
         </View>
         {/* <Button onClick={this.increment}>+</Button>

@@ -5,12 +5,12 @@ import { AtDrawer } from 'taro-ui'
 
 @inject('globalStore')
 @observer
-class xssc extends Component {
+class majorWiki extends Component {
 
-    apiPath = "https://idd.cssapsu.cn/books/freshman_wiki/"
+    apiPath = "https://idd.cssapsu.cn/books/major_wiki/"
 
     config = {
-        navigationBarTitleText: '新生手册',
+        navigationBarTitleText: '专业百科',
         usingComponents: {
             wemark: '../wemark/wemark'
         },
@@ -19,7 +19,7 @@ class xssc extends Component {
     state = {
         md: '# 加载中...',
         currentSectionIndex: -1,
-        currentSection: wx.getStorageSync('__xxsc_section') || 'README.md',
+        currentSection: wx.getStorageSync('__major_section') || 'README.md',
         currentSectionTitle: '',
         drawerShow: false,
         menuData: [],
@@ -30,17 +30,17 @@ class xssc extends Component {
         console.log(this.$router.params)
         if ('section' in this.$router.params) {
             console.log(this.$router.params)
-            wx.setStorageSync('__xxsc_section', this.$router.params.section);
+            wx.setStorageSync('__major_section', this.$router.params.section);
             this.fetchSection(this.$router.params.section);
         } else {
-            this.fetchSection(wx.getStorageSync('__xxsc_section') || 'README.md')
+            this.fetchSection(wx.getStorageSync('__major_section') || 'README.md')
         }
     }
 
     onShareAppMessage(res) {
         return {
-            title: this.state.currentSectionTitle + ' PSU新生手册',
-            path: 'pages/xssc?from=share&section=' + this.state.currentSection
+            title: this.state.currentSectionTitle + ' PSU专业百科',
+            path: 'pages/major_wiki?from=share&section=' + this.state.currentSection
         };
     }
 
@@ -69,7 +69,7 @@ class xssc extends Component {
         var self = this;
         this.fetchContent(sectionName, function (data) {
             self.setState({ md: data, currentSection: sectionName })
-            wx.setStorageSync('__xxsc_section', sectionName);
+            wx.setStorageSync('__major_section', sectionName);
             self.fetchMenu()
         })
     }
@@ -186,4 +186,4 @@ class xssc extends Component {
     }
 }
 
-export default xssc 
+export default majorWiki 

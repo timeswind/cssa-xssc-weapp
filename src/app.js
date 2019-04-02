@@ -24,7 +24,8 @@ class App extends Component {
   config = {
     pages: [
       'pages/index/index',
-      'pages/xssc'
+      'pages/xssc',
+      'pages/major_wiki'
     ],
     window: {
       backgroundTextStyle: 'light',

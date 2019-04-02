@@ -61,3 +61,12 @@ page {
     left: 32rpx;
     border-radius: 10rpx;
 }
+
+
+.at-list__item-extra {
+    display: none;
+}
+
+.at-list__item .item-content__info-title {
+    white-space: normal;
+}
