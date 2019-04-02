@@ -1,0 +1,63 @@
+page {
+    background-color: #f4f4f7;
+}
+
+.bg-white--cssa {
+    background-color: #f4f4f7;
+}
+
+.bg-red--cssa {
+    background-color: #ee5050;
+}
+
+.bg-back--cssa {
+    background-color: #1b1b1b;
+}
+
+.color-red--cssa {
+    color: #ee5050;
+}
+
+.color-deepred--cssa {
+    color: #a02727;
+}
+
+.color-white {
+    color: #fff;
+}
+
+.freshman-manual-index {
+    padding-top: 198px
+}
+
+.freshman-manual-index .at-drawer__content {
+    padding-top: 200rpx;
+}
+
+.xssc-share-button {
+    height: 80rpx;
+    background: #1b1b1b;
+    color: #fff;
+    text-align: center;
+    line-height: 80rpx;
+    display: inline-block;
+    padding: 0 32rpx;
+    position: fixed;
+    bottom: 198px;
+    right: 32rpx;
+    border-radius: 10rpx;
+}
+
+.xssc-home-button {
+    height: 80rpx;
+    background: #1b1b1b;
+    color: #fff;
+    text-align: center;
+    line-height: 80rpx;
+    display: inline-block;
+    padding: 0 32rpx;
+    position: fixed;
+    top: 100rpx;
+    left: 32rpx;
+    border-radius: 10rpx;
+}
