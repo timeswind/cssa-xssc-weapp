@@ -19,7 +19,7 @@ class IndexPage extends Component {
 
   componentWillMount() { }
 
-  componentWillReact() {}
+  componentWillReact() { }
 
   componentDidMount() { }
 
@@ -36,24 +36,11 @@ class IndexPage extends Component {
     };
   }
 
-  // increment = () => {
-  //   const { counterStore } = this.props
-  //   counterStore.increment()
-  // }
-
-  // decrement = () => {
-  //   const { counterStore } = this.props
-  //   counterStore.decrement()
-  // }
   navigate = (path) => {
     Taro.navigateTo({
       url: path
     })
   }
-  // incrementAsync = () => {
-  //   const { counterStore } = this.props
-  //   counterStore.incrementAsync()
-  // }
 
   render() {
     const { globalStore: { deviceModel } } = this.props
@@ -68,7 +55,7 @@ class IndexPage extends Component {
           </View>
           <Text className="color-deepred--cssa" style="font-size: 1.5rem; font-weight: bold">欢迎来到宾州州立！</Text>
         </View>
-        <View className="navigationcard_wrapper" style="margin: 16px;">
+        <View className="navigationcard_wrapper" style="margin: 16px 16px 0 16px">
           <View className="navigationcard" onClick={() => this.navigate('/pages/xssc')}>
             <Text style="font-weight: bold; color: #fff;display: block; font-size: 32px">新生手册{this.state.year}</Text>
             <Text style="font-weight: bold; color: #a02727"> CSSA学术部</Text>
@@ -80,6 +67,21 @@ class IndexPage extends Component {
             <Text style="font-weight: bold; color: #ffecb3"> CSSA宣传部</Text>
           </View>
         </View>
+        <View style="text-align: left;margin-left: 64rpx;font-weight: bold">
+
+        <View>
+          <Text style="color: #999">
+            信息错误？信息不全？
+        </Text>
+        </View>
+        <View>
+        <Text style="color: #999">
+            我们希望得到你的反馈！
+        </Text>
+        </View>
+        <button class='contact-btn' style="margin-top: 32rpx" open-type='contact'>联系我们</button>
+        </View>
+
         {/* <Button onClick={this.increment}>+</Button>
         <Button onClick={this.decrement}>-</Button>
         <Button onClick={this.incrementAsync}>Add Async</Button>

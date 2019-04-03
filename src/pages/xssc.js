@@ -27,9 +27,7 @@ class xssc extends Component {
     }
 
     componentWillMount() {
-        console.log(this.$router.params)
         if ('section' in this.$router.params) {
-            console.log(this.$router.params)
             wx.setStorageSync('__xxsc_section', this.$router.params.section);
             this.fetchSection(this.$router.params.section);
         } else {

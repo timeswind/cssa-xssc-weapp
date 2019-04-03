@@ -46,6 +46,7 @@ page {
     bottom: 198px;
     right: 32rpx;
     border-radius: 10rpx;
+    z-index:99;
 }
 
 .xssc-home-button {
@@ -60,8 +61,19 @@ page {
     top: 100rpx;
     left: 32rpx;
     border-radius: 10rpx;
+    z-index:99;
 }
 
+.contact-btn {
+    height: 80rpx;
+    background: #1b1b1b;
+    color: #fff;
+    text-align: center;
+    line-height: 80rpx;
+    display: inline-block;
+    padding: 0 32rpx;
+    border-radius: 10rpx;
+}
 
 .at-list__item-extra {
     display: none;

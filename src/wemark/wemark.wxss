@@ -19,6 +19,7 @@
 .wemark_inline_link {
   color: #ee5050;
   text-decoration: underline;
+  word-wrap:break-word;
 }
 /* .wemark_block_h1::before {
   display: block;

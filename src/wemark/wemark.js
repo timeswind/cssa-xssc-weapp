@@ -1,5 +1,4 @@
 const parser = require('./parser');
-const getRichTextNodes = require('./richtext').getRichTextNodes;
 
 Component({
 	properties: {
@@ -36,23 +35,11 @@ Component({
 		},
 		parseMd() {
 			if (this.data.md) {
-				var parsedData = parser.parse(this.data.md, {
-					link: this.data.link,
-					highlight: this.data.highlight
-				});
-				// console.log('parsedData:', parsedData);
+				var parsedData = parser.parse(this.data.md);
+
 				if (this.data.type === 'wemark') {
-					this.setData({
-						parsedData
-					});
-				} else {
-					var richTextNodes = getRichTextNodes(parsedData);
-
-					this.setData({
-						richTextNodes
-					});
+					this.setData({parsedData});
 				}
-
 			}
 		}
 	}
