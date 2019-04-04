@@ -13,6 +13,10 @@ Component({
 			type: String,
 			value: 'wemark'
 		},
+		apipath: {
+			type: String,
+			value: ''
+		},
 		link: {
 			type: Boolean,
 			value: false
@@ -35,10 +39,10 @@ Component({
 		},
 		parseMd() {
 			if (this.data.md) {
-				var parsedData = parser.parse(this.data.md);
+				var parsedData = parser.parse(this.data.md, { "apipath": this.properties.apipath });
 
 				if (this.data.type === 'wemark') {
-					this.setData({parsedData});
+					this.setData({ parsedData });
 				}
 			}
 		}

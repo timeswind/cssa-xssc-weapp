@@ -164,7 +164,7 @@ class xssc extends Component {
                     onItemClick={(index) => { this.menuClick(index) }}
                     items={this.state.menuNameListArray}
                 ></AtDrawer>
-                <wemark md={this.state.md} link highlight type='wemark' />
+                <wemark md={this.state.md} link highlight type='wemark' apipath={this.apiPath}/>
                 <View style={deviceModel == "iPhone X" ? bottomBarStyleIphoneX : bottomBarStyleNormal}>
                     <View style="display: flex;flex:1;justify-content: center;font-size: 34rpx;align-items:center;" onClick={this.prevSection}>
                         <Text class="at-icon at-icon-chevron-left" style="font-size:34rpx;color:#fff;font-weight: bold"></Text>

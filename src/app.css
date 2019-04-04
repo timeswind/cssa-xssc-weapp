@@ -26,6 +26,12 @@ page {
     color: #fff;
 }
 
+.container {
+    padding-bottom: 32px;
+    text-align: center;
+    z-index: 10;
+}
+
 .freshman-manual-index {
     padding-top: 198px
 }
@@ -49,7 +55,7 @@ page {
     z-index:99;
 }
 
-.xssc-home-button {
+.xssc-home-button, .back-botton {
     height: 80rpx;
     background: #1b1b1b;
     color: #fff;

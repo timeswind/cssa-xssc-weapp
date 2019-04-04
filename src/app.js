@@ -1,12 +1,16 @@
 import Taro, { Component } from '@tarojs/taro'
-import { Provider, observer, inject } from '@tarojs/mobx'
+import { Provider } from '@tarojs/mobx'
 import Index from './pages/index'
 
 import counterStore from './store/counter'
 import globalStore from './store/global'
 
 import './app.css'
-import 'taro-ui/dist/style/index.scss'
+import "taro-ui/dist/style/components/drawer.scss";
+import "taro-ui/dist/style/components/list.scss";
+import "taro-ui/dist/style/components/icon.scss";
+
+// import 'taro-ui/dist/style/index.scss'
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -24,6 +28,7 @@ class App extends Component {
   config = {
     pages: [
       'pages/index/index',
+      'pages/about',
       'pages/xssc',
       'pages/major_wiki'
     ],

@@ -1,9 +1,3 @@
-.container {
-    padding-bottom: 32px;
-    text-align: center;
-    z-index: 10;
-}
-
 .navigationcard_wrapper {
     display: flex;
     justify-content: center;
@@ -12,21 +6,39 @@
 }
 
 .navigationcard {
-    box-shadow: 0px 10px 40px #aaa;
     border-radius: 10px;
-    background: #ee5050;
     width: 100%;
     height: 200px;
     text-align: left;
     padding: 64px 0 0 64px;
-    transition: box-shadow 0.2s ease-in-out;
 }
 
-.navigationcard:active {
-    box-shadow: 0px 2px 6px #aaa;
+.index-top-bg {
+    background-image: url("https://idd.cssapsu.cn/images/index_bg_op10.png");
+    background-size: 75%
 }
 
-.home-title {
+.major-wiki-bg {
+    background:#ffc107;
+    background-image: url("https://idd.cssapsu.cn/images/major_wiki_bg.png");
+    background-size: 25%;
+    background-repeat: no-repeat;
+    background-position: 95%;
+}
+
+.freshman-wiki-bg {
+    background:#ee5050;
+    background-image: url("https://idd.cssapsu.cn/images/freshman_wiki_bg.png");
+    background-size: 25%;
+    background-repeat: no-repeat;
+    background-position: 92%;
+}
+
+.index-card-title {
+    font-weight: bold; color: #fff;display: block; font-size: 64rpx;text-shadow: 1px 1px 1px #333;
+}
+
+.index-title {
     height: 400px;
     text-align: left;
     line-height: 800px;

@@ -2,34 +2,25 @@ var Remarkable = require('./remarkable');
 var parser = new Remarkable({
 	html: true
 });
-var prism = require('./prism');
 
 function parse(md, options) {
-
 	if (!options) options = {};
 	var tokens = parser.parse(md, {});
 
-	// markdwon渲染列表
 	var renderList = [];
 
 	var env = [];
-	// 记录当前list深度
 	var listLevel = 0;
-	// 记录第N级ol的顺序
 	var orderNum = [0, 0];
 	var tmp;
 
-	// 获取inline内容
 	var getInlineContent = function (inlineToken) {
 		var ret = [];
 		var env;
 		var tokenData = {};
 
 		if (inlineToken.type === 'htmlblock') {
-			// 匹配video
-			// 兼容video[src]和video > source[src]
 			var videoRegExp = /<video.*?src\s*=\s*['"]*([^\s^'^"]+).*?(poster\s*=\s*['"]*([^\s^'^"]+).*?)?(?:\/\s*>|<\/video>)/g;
-
 			var match;
 			var html = inlineToken.content.replace(/\n/g, '');
 			while (match = videoRegExp.exec(html)) {
@@ -47,7 +38,6 @@ function parse(md, options) {
 				}
 			}
 		} else {
-			// console.log(inlineToken);
 			inlineToken.children && inlineToken.children.forEach(function (token, index) {
 				if (['text', 'code'].indexOf(token.type) > -1) {
 					ret.push({
@@ -61,11 +51,6 @@ function parse(md, options) {
 				} else if (token.type === 'del_open') {
 					env = 'deleted';
 				} else if (token.type === 'softbreak') {
-					// todo:处理li的问题
-					/* ret.push({
-						type: 'text',
-						content: ' '
-					}); */
 				} else if (token.type === 'hardbreak') {
 					ret.push({
 						type: 'text',
@@ -84,16 +69,19 @@ function parse(md, options) {
 					}
 				} else if (token.type === 'image') {
 					var splits = token.src.split('/')
-					var src = 'https://idd.cssapsu.cn/gitbook/assets/' + splits[splits.length - 1]
-					if (token.src.search('https://') > -1 || token.src.search('data:image/') > -1) {
-						src = token.src
+					var imageKey = splits[splits.length - 1]
+					var src = 'gitbook/assets/' + imageKey
+					if (options.apipath) {
+						src = options.apipath + src
+						if (token.src.search('https://') > -1 || token.src.search('data:image/') > -1) {
+							src = token.src
+						}
+						ret.push({
+							type: token.type,
+							src: src,
+							selectable: true
+						});
 					}
-
-					ret.push({
-						type: token.type,
-						src: src,
-						selectable: true
-					});
 				}
 			});
 		}
@@ -138,10 +126,10 @@ function parse(md, options) {
 		} else if (blockToken.type === 'fence' || blockToken.type === 'code') {
 			content = blockToken.content;
 			var highlight = false;
-			if (options.highlight && blockToken.params && prism.languages[blockToken.params]) {
-				content = prism.tokenize(content, prism.languages[blockToken.params]);
-				highlight = true;
-			}
+			// if (options.highlight && blockToken.params && prism.languages[blockToken.params]) {
+			// 	content = prism.tokenize(content, prism.languages[blockToken.params]);
+			// 	highlight = true;
+			// }
 
 			// flatten nested tokens in html
 			if (blockToken.params === 'html') {
@@ -216,7 +204,6 @@ function parse(md, options) {
 	};
 
 	tokens.forEach(function (token, index) {
-		// 标记是否刚进入li，如果刚进入，可以加符号/序号，否则不加
 		var firstInLi = false;
 		if (token.type === 'paragraph_open' && tokens[index - 1] && tokens[index - 1].type === 'list_item_open') {
 			firstInLi = true;

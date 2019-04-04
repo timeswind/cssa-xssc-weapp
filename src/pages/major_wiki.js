@@ -139,9 +139,9 @@ class majorWiki extends Component {
 
     redirectTo = (path) => {
         Taro.redirectTo({
-          url: path
+            url: path
         })
-      }
+    }
 
     render() {
         const { globalStore: { deviceModel } } = this.props
@@ -153,7 +153,7 @@ class majorWiki extends Component {
                 <Button class="xssc-home-button" onClick={() => this.redirectTo('/pages/index/index')}>
                     <Text class="at-icon at-icon-home" style="font-size:34rpx;color:#fff;font-weight: bold">首页</Text>
                 </Button>
-                <Button class="xssc-share-button" open-type="share" style={deviceModel == "iPhone X" ? {} : {bottom: "114rpx"}}>
+                <Button class="xssc-share-button" open-type="share" style={deviceModel == "iPhone X" ? {} : { bottom: "114rpx" }}>
                     <Text class="at-icon at-icon-share" style="font-size:34rpx;color:#fff;font-weight: bold">分享</Text>
                 </Button>
 
@@ -164,7 +164,7 @@ class majorWiki extends Component {
                     onItemClick={(index) => { this.menuClick(index) }}
                     items={this.state.menuNameListArray}
                 ></AtDrawer>
-                <wemark md={this.state.md} link highlight type='wemark' />
+                <wemark md={this.state.md} link highlight type='wemark' apipath={this.apiPath} />
                 <View style={deviceModel == "iPhone X" ? bottomBarStyleIphoneX : bottomBarStyleNormal}>
                     <View style="display: flex;flex:1;justify-content: center;font-size: 34rpx;align-items:center;" onClick={this.prevSection}>
                         <Text class="at-icon at-icon-chevron-left" style="font-size:34rpx;color:#fff;font-weight: bold"></Text>

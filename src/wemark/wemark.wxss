@@ -1,5 +1,3 @@
-@import "prism.wxss";
-
 .wemark_wrapper {
   margin: 32px 32px;
   margin-bottom: 204rpx;
@@ -15,6 +13,7 @@
   margin-bottom: 1em;
   border-left: 12px solid #ee5050;
   padding-left: 16px;
+  line-height: 1.2;
 }
 .wemark_inline_link {
   color: #ee5050;
