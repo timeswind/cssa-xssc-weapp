@@ -1,12 +1,12 @@
 var Remarkable = require('./remarkable');
-var parser = new Remarkable({
+var RemarkableParser = new Remarkable({
 	html: true
 });
 
 function parse(md, options) {
 	if (!options) options = {};
-	var tokens = parser.parse(md, {});
-
+	var tokens = RemarkableParser.parse(md, {});
+	console.log(tokens)
 	var renderList = [];
 
 	var env = [];

@@ -8,6 +8,7 @@ import { AtDrawer } from 'taro-ui'
 class majorWiki extends Component {
 
     apiPath = "https://idd.cssapsu.cn/books/major_wiki/"
+    menuMarkdownKey = "SUMMARY.md"
 
     config = {
         navigationBarTitleText: '专业百科',
@@ -68,7 +69,7 @@ class majorWiki extends Component {
         this.fetchContent(sectionName, function (data) {
             self.setState({ md: data, currentSection: sectionName })
             wx.setStorageSync('__major_section', sectionName);
-            self.fetchMenu()
+            self.fetchMenu(self.menuMarkdownKey + '?t=' + new Date().getTime())
         })
     }
 
@@ -98,11 +99,11 @@ class majorWiki extends Component {
         this.setState({ currentSectionTitle: sectionTitle, drawerShow: false })
     }
 
-    fetchMenu() {
+    fetchMenu(menuKey) {
         var menuDataProcess = [];
         var menuNameListProcess = [];
         var self = this;
-        this.fetchContent('SUMMARY.md', function (data) {
+        this.fetchContent(menuKey, function (data) {
             var lines = data.split('\n');
             lines.splice(0, 2);
             lines.pop();

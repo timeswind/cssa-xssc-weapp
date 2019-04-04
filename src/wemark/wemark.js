@@ -39,7 +39,7 @@ Component({
 		},
 		parseMd() {
 			if (this.data.md) {
-				var parsedData = parser.parse(this.data.md, { "apipath": this.properties.apipath });
+				var parsedData = parser.parse(this.data.md, { "apipath": this.properties.apipath, "link": this.properties.link });
 
 				if (this.data.type === 'wemark') {
 					this.setData({ parsedData });
