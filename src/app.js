@@ -9,6 +9,8 @@ import './app.css'
 import "taro-ui/dist/style/components/drawer.scss";
 import "taro-ui/dist/style/components/list.scss";
 import "taro-ui/dist/style/components/icon.scss";
+import "taro-ui/dist/style/components/search-bar.scss";
+import "taro-ui/dist/style/components/button.scss";
 
 // import 'taro-ui/dist/style/index.scss'
 

@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
-import { AtDrawer } from 'taro-ui'
+import { AtDrawer, AtSearchBar, AtList, AtListItem } from 'taro-ui'
 
 @inject('globalStore')
 @observer
@@ -9,6 +9,9 @@ class majorWiki extends Component {
 
     apiPath = "https://idd.cssapsu.cn/books/major_wiki/"
     menuMarkdownKey = "SUMMARY.md"
+    searchDicKey = "search.json"
+    pageDicKey = "page_dic.json"
+    localStoreSectionKey = "__major_section"
 
     config = {
         navigationBarTitleText: '专业百科',
@@ -20,26 +23,32 @@ class majorWiki extends Component {
     state = {
         md: '# 加载中...',
         currentSectionIndex: -1,
-        currentSection: wx.getStorageSync('__major_section') || 'README.md',
+        currentSection: wx.getStorageSync(this.localStoreSectionKey) || 'README.md',
         currentSectionTitle: '',
         drawerShow: false,
         menuData: [],
-        menuNameListArray: []
+        menuNameListArray: [],
+        searchValue: "",
+        searchDic: {},
+        pageDic: {},
+        searchResults: []
     }
 
     componentWillMount() {
         if ('section' in this.$router.params) {
-            wx.setStorageSync('__major_section', this.$router.params.section);
+            wx.setStorageSync(this.localStoreSectionKey, this.$router.params.section);
             this.fetchSection(this.$router.params.section);
         } else {
-            this.fetchSection(wx.getStorageSync('__major_section') || 'README.md')
+            this.fetchSection(wx.getStorageSync(this.localStoreSectionKey) || 'README.md')
         }
+        this.fetchMenu(this.menuMarkdownKey + '?t=' + new Date().getTime())
+        this.fetchSearchDic()
     }
 
     onShareAppMessage(res) {
         return {
-            title: this.state.currentSectionTitle + ' PSU专业百科',
-            path: 'pages/major_wiki?from=share&section=' + this.state.currentSection
+            title: this.state.currentSectionTitle + ' PSU新生手册',
+            path: 'pages/xssc?from=share&section=' + this.state.currentSection
         };
     }
 
@@ -53,10 +62,40 @@ class majorWiki extends Component {
 
     componentDidHide() { }
 
-    findSectionNameIndex(menuData, sectionName) {
+    searchOnChange(newValue) {
+        var update = { searchValue: newValue }
+        if (newValue == '') {
+            update["searchResults"] = []
+        }
+        this.setState(update)
+    }
+
+    searchOnActionClick() {
+        var searchTerm = this.state.searchValue;
+        var searchDic = this.state.searchDic;
+        var pageDic = this.state.pageDic;
+
+        if (searchTerm in searchDic) {
+            var rawResult = JSON.parse(JSON.stringify(searchDic[searchTerm]))
+            rawResult.forEach((raw, index) => [
+                rawResult[index] = { key: pageDic[raw][1], title: pageDic[raw][0] }
+            ])
+            this.setState({ searchResults: rawResult })
+        } else {
+            this.setState({ searchResults: [] })
+        }
+    }
+
+    handleSeachResultClick(sectionKey, e) {
+        e.stopPropagation();
+        this.fetchSection(sectionKey)
+        this.setState({ drawerShow: false })
+    }
+
+    findSectionIndex(menuData, section) {
         var result = -1;
         menuData.forEach((data, index) => {
-            if (data.key == sectionName) {
+            if (data.key == section) {
                 result = index;
                 return;
             }
@@ -64,28 +103,44 @@ class majorWiki extends Component {
         return result
     }
 
-    fetchSection(sectionName) {
+    findSectionName(menuData, section) {
+        var result = "";
+        menuData.forEach((data, index) => {
+            if (data.key == section) {
+                result = data.value;
+                return;
+            }
+        })
+        return result
+    }
+
+    fetchSection(section) {
         var self = this;
-        this.fetchContent(sectionName, function (data) {
-            self.setState({ md: data, currentSection: sectionName })
-            wx.setStorageSync('__major_section', sectionName);
-            self.fetchMenu(self.menuMarkdownKey + '?t=' + new Date().getTime())
+        const menuData = this.state.menuData;
+        this.fetchContent(section, function (data) {
+            const currentSectionName = self.findSectionName(menuData, section)
+            const currentSectionIndex = self.findSectionIndex(menuData, section)
+            self.setState({ md: data, currentSection: section, currentSectionTitle: currentSectionName, currentSectionIndex: currentSectionIndex, drawerShow: false })
+            wx.setStorageSync(self.localStoreSectionKey, section);
         })
     }
 
     openMenuDrawer = () => {
+        if (this.state.menuData == []) {
+            this.fetchMenu(this.menuMarkdownKey + '?t=' + new Date().getTime())
+        }
         this.setState({ drawerShow: true })
     }
 
     prevSection = () => {
-        var currentSectionIndex = this.findSectionNameIndex(this.state.menuData, this.state.currentSection)
+        var currentSectionIndex = this.findSectionIndex(this.state.menuData, this.state.currentSection)
         if (currentSectionIndex !== -1 && currentSectionIndex !== 0) {
             this.menuClick(currentSectionIndex - 1)
         }
     }
 
     nextSection = () => {
-        var currentSectionIndex = this.findSectionNameIndex(this.state.menuData, this.state.currentSection)
+        var currentSectionIndex = this.findSectionIndex(this.state.menuData, this.state.currentSection)
         if (currentSectionIndex !== -1 && currentSectionIndex !== (this.state.menuData.length - 1)) {
             this.menuClick(currentSectionIndex + 1)
         }
@@ -93,10 +148,8 @@ class majorWiki extends Component {
 
 
     menuClick(index) {
-        var sectionTitle = this.state.menuData[index]["value"]
-        var sectionName = this.state.menuData[index]["key"]
-        this.fetchSection(sectionName)
-        this.setState({ currentSectionTitle: sectionTitle, drawerShow: false })
+        var section = this.state.menuData[index]["key"]
+        this.fetchSection(section)
     }
 
     fetchMenu(menuKey) {
@@ -117,7 +170,21 @@ class majorWiki extends Component {
                 menuNameListProcess.push(value);
                 menuDataProcess.push(menu_item);
             });
+            console.log(menuDataProcess)
             self.setState({ menuData: menuDataProcess, menuNameListArray: menuNameListProcess })
+        })
+    }
+
+    fetchSearchDic() {
+        var self = this
+        this.fetchContent(this.searchDicKey, function (searchDic) {
+            console.log(searchDic)
+            self.setState({ searchDic: searchDic })
+
+        })
+        this.fetchContent(this.pageDicKey, function (pageDic) {
+            console.log(pageDic)
+            self.setState({ pageDic: pageDic })
         })
     }
 
@@ -148,9 +215,22 @@ class majorWiki extends Component {
         const { globalStore: { deviceModel } } = this.props
         const bottomBarStyleIphoneX = { width: "100%", position: "fixed", bottom: "0", paddingBottom: "68rpx", height: "44px", background: "#EE5050", display: "flex", flexDirection: "row" }
         const bottomBarStyleNormal = { width: "100%", position: "fixed", bottom: "0px", height: "44px", background: "#EE5050", display: "flex", flexDirection: "row" }
-
+        const searchResultRender = (
+            <AtList>
+                {this.state.searchResults.map((result) =>
+                    <AtListItem title={result.title} onClick={this.handleSeachResultClick.bind(this, result.key)} arrow='right' key={result.key} />
+                )}
+            </AtList>
+        )
         return (
             <View className='freshman-manual-index'>
+                <AtSearchBar
+                    actionName='搜一下'
+                    value={this.state.searchValue}
+                    onChange={this.searchOnChange.bind(this)}
+                    onActionClick={this.searchOnActionClick.bind(this)}
+                />
+                {searchResultRender}
                 <Button class="xssc-home-button" onClick={() => this.redirectTo('/pages/index/index')}>
                     <Text class="at-icon at-icon-home" style="font-size:34rpx;color:#fff;font-weight: bold">首页</Text>
                 </Button>

@@ -6,7 +6,6 @@ var RemarkableParser = new Remarkable({
 function parse(md, options) {
 	if (!options) options = {};
 	var tokens = RemarkableParser.parse(md, {});
-	console.log(tokens)
 	var renderList = [];
 
 	var env = [];

@@ -52,7 +52,7 @@ page {
     bottom: 198px;
     right: 32rpx;
     border-radius: 10rpx;
-    z-index:99;
+    z-index: 99;
 }
 
 .xssc-home-button, .back-botton {
@@ -67,7 +67,7 @@ page {
     top: 100rpx;
     left: 32rpx;
     border-radius: 10rpx;
-    z-index:99;
+    z-index: 99;
 }
 
 .contact-btn {
@@ -87,4 +87,26 @@ page {
 
 .at-list__item .item-content__info-title {
     white-space: normal;
+}
+
+.at-search-bar {
+    background: #f4f4f7 !important;
+}
+
+.at-search-bar::after {
+    border: none !important;
+}
+
+.at-search-bar__input-cnt {
+    background: #ffffff !important;
+}
+
+.at-search-bar__action {
+    background: #ee5050 !important;
+    color: #fff !important;
+    font-weight: bold !important;
+}
+
+.at-list::after {
+    border: none !important;
 }
