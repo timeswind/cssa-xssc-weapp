@@ -13,6 +13,8 @@ class majorWiki extends Component {
     searchDicKey = "search.json"
     pageDicKey = "page_dic.json"
     localStoreSectionKey = "__major_section"
+    shareName = " PSU专业百科"
+    pathPrefix = "pages/major_wiki"
 
     config = {
         navigationBarTitleText: '专业百科',
@@ -49,8 +51,8 @@ class majorWiki extends Component {
 
     onShareAppMessage(res) {
         return {
-            title: this.state.currentSectionTitle + ' PSU新生手册',
-            path: 'pages/xssc?from=share&section=' + this.state.currentSection
+            title: this.state.currentSectionTitle + this.shareName,
+            path: this.pathPrefix + '?from=share&section=' + this.state.currentSection
         };
     }
 
