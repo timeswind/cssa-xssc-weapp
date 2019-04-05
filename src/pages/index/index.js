@@ -1,5 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
+import mta from 'mta-wechat-analysis';
 
 import './index.css'
 
@@ -13,7 +14,9 @@ class IndexPage extends Component {
     year: new Date().getFullYear()
   }
 
-  componentWillMount() { }
+  componentWillMount() {
+    mta.Page.init();
+  }
 
   componentWillReact() { }
 

@@ -1,5 +1,6 @@
 import { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
+import mta from 'mta-wechat-analysis';
 
 class About extends Component {
 
@@ -23,7 +24,9 @@ class About extends Component {
         `
     }
 
-    componentWillMount() { }
+    componentWillMount() {
+        mta.Page.init();
+    }
 
     componentWillReact() { }
 

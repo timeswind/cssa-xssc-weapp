@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 import { AtDrawer, AtSearchBar, AtList, AtListItem } from 'taro-ui'
+import mta from 'mta-wechat-analysis';
 
 @inject('globalStore')
 @observer
@@ -35,6 +36,7 @@ class majorWiki extends Component {
     }
 
     componentWillMount() {
+        mta.Page.init();
         if ('section' in this.$router.params) {
             wx.setStorageSync(this.localStoreSectionKey, this.$router.params.section);
             this.fetchSection(this.$router.params.section);
@@ -74,6 +76,8 @@ class majorWiki extends Component {
         var searchTerm = this.state.searchValue;
         var searchDic = this.state.searchDic;
         var pageDic = this.state.pageDic;
+
+        mta.Event.stat('major_wiki_search', { 'query': searchTerm })
 
         if (searchTerm in searchDic) {
             var rawResult = JSON.parse(JSON.stringify(searchDic[searchTerm]))
@@ -170,7 +174,6 @@ class majorWiki extends Component {
                 menuNameListProcess.push(value);
                 menuDataProcess.push(menu_item);
             });
-            console.log(menuDataProcess)
             self.setState({ menuData: menuDataProcess, menuNameListArray: menuNameListProcess })
         })
     }
@@ -178,12 +181,10 @@ class majorWiki extends Component {
     fetchSearchDic() {
         var self = this
         this.fetchContent(this.searchDicKey, function (searchDic) {
-            console.log(searchDic)
             self.setState({ searchDic: searchDic })
 
         })
         this.fetchContent(this.pageDicKey, function (pageDic) {
-            console.log(pageDic)
             self.setState({ pageDic: pageDic })
         })
     }

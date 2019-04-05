@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 import { AtDrawer, AtSearchBar, AtList, AtListItem } from 'taro-ui'
+import mta from 'mta-wechat-analysis';
 
 @inject('globalStore')
 @observer
@@ -36,6 +37,7 @@ class xssc extends Component {
     }
 
     componentWillMount() {
+        mta.Page.init();
         if ('section' in this.$router.params) {
             wx.setStorageSync(this.localStoreSectionKey, this.$router.params.section);
             this.fetchSection(this.$router.params.section);
@@ -75,6 +77,8 @@ class xssc extends Component {
         var searchTerm = this.state.searchValue;
         var searchDic = this.state.searchDic;
         var pageDic = this.state.pageDic;
+
+        mta.Event.stat('freshman_wiki_search', { 'query': searchTerm })
 
         if (searchTerm in searchDic) {
             var rawResult = JSON.parse(JSON.stringify(searchDic[searchTerm]))
