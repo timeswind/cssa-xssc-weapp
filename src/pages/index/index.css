@@ -39,8 +39,6 @@
 }
 
 .index-title {
-    height: 400px;
     text-align: left;
-    line-height: 800px;
-    padding: 0 0 32px 0;
+    padding: 200px 0 16px 0;
 }

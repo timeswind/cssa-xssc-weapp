@@ -1,6 +1,5 @@
-import { Component } from '@tarojs/taro'
+import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import mta from 'mta-wechat-analysis';
 
 class About extends Component {
 
@@ -24,9 +23,7 @@ class About extends Component {
         `
     }
 
-    componentWillMount() {
-        mta.Page.init();
-    }
+    componentWillMount() {}
 
     componentWillReact() { }
 
@@ -41,7 +38,7 @@ class About extends Component {
     render() {
         return (
             <View className='index'>
-                <Button class="back-botton" onClick={() => wx.navigateBack()}>
+                <Button class="back-botton" onClick={() => Taro.navigateBack()}>
                     <Text class="at-icon at-icon-chevron-left" style="font-size:34rpx;color:#fff;font-weight: bold"> 返回</Text>
                 </Button>
                 <View className="bg-red--cssa index-top-bg" style="padding: 0 0 64rpx 64rpx;text-align: left;height: 400rpx;line-height:800rpx">

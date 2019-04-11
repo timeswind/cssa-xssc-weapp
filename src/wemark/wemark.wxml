@@ -24,7 +24,7 @@
 	<rich-text class="wemark_wrapper_richtext" wx:if="{{type === 'rich-text'}}" nodes="{{richTextNodes}}"></rich-text>
 	<block>
 		<View
-			style="text-align: left;font-weight: bold;padding-top: 32rpx;margin-top:32rpx;border-top: 1px solid #ddd;padding-bottom: 128rpx">
+			style="text-align: left;font-weight: bold;padding-top: 32rpx;margin-top:32rpx;border-top: 1px solid #ddd;padding-bottom: 0">
 
 			<View>
 				<Text style="color: #999">

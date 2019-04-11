@@ -1,7 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { Provider } from '@tarojs/mobx'
 import Index from './pages/index'
-import mta from 'mta-wechat-analysis';
 import counterStore from './store/counter';
 import globalStore from './store/global';
 
@@ -43,15 +42,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-
-    mta.App.init({
-      "appID": "500677363",
-      "eventID": "500677364",
-      "statShareApp": true,
-      "statReachBottom": true
-    });
-    
-    wx.getSystemInfo({
+    Taro.getSystemInfo({
       success: res => {
         let modelmes = res.model
         if (modelmes.search('iPhone X') != -1) {

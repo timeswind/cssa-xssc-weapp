@@ -1,4 +1,5 @@
 const parser = require('./parser');
+import Taro from '@tarojs/taro';
 
 Component({
 	properties: {
@@ -33,7 +34,7 @@ Component({
 	methods: {
 		urlonclick: function (event) {
 			// copy url to clipboard
-			wx.setClipboardData({
+			Taro.setClipboardData({
 				data: event.currentTarget.dataset.link
 			})
 		},

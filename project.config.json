@@ -1,13 +1,15 @@
 {
-  "miniprogramRoot": "./dist",
-  "projectname": "cssa-student-manual-2019",
-  "description": "Penn State CSSA 新生手册",
-  "appid": "wx33eac0afa5ac5f5d",
-  "setting": {
-    "urlCheck": true,
-    "es6": false,
-    "postcss": false,
-    "minified": false
-  },
-  "compileType": "miniprogram"
+	"miniprogramRoot": "dist/",
+	"projectname": "cssa-student-manual-2019",
+	"description": "Penn State CSSA 新生手册",
+	"appid": "wx33eac0afa5ac5f5d",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"condition": {}
 }

@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 import { AtDrawer, AtSearchBar, AtList, AtListItem } from 'taro-ui'
-import mta from 'mta-wechat-analysis';
+import CSSA_LOGO_2019_red_w400 from "../images/CSSA_LOGO_2019_red_w400.png"
 
 @inject('globalStore')
 @observer
@@ -15,7 +15,8 @@ class xssc extends Component {
     localStoreSectionKey = "__xxsc_section"
     shareName = " PSU新生手册"
     pathPrefix = "pages/xssc"
-
+    searchDic = {};
+    pageDic = {};
 
     config = {
         navigationBarTitleText: '新生手册',
@@ -27,24 +28,21 @@ class xssc extends Component {
     state = {
         md: '# 加载中...',
         currentSectionIndex: -1,
-        currentSection: wx.getStorageSync(this.localStoreSectionKey) || 'README.md',
+        currentSection: Taro.getStorageSync(this.localStoreSectionKey) || 'README.md',
         currentSectionTitle: '',
         drawerShow: false,
         menuData: [],
         menuNameListArray: [],
         searchValue: "",
-        searchDic: {},
-        pageDic: {},
         searchResults: []
     }
 
     componentWillMount() {
-        mta.Page.init();
         if ('section' in this.$router.params) {
-            wx.setStorageSync(this.localStoreSectionKey, this.$router.params.section);
+            Taro.setStorageSync(this.localStoreSectionKey, this.$router.params.section);
             this.fetchSection(this.$router.params.section);
         } else {
-            this.fetchSection(wx.getStorageSync(this.localStoreSectionKey) || 'README.md')
+            this.fetchSection(Taro.getStorageSync(this.localStoreSectionKey) || 'README.md')
         }
         this.fetchMenu(this.menuMarkdownKey + '?t=' + new Date().getTime())
         this.fetchSearchDic()
@@ -77,10 +75,14 @@ class xssc extends Component {
 
     searchOnActionClick() {
         var searchTerm = this.state.searchValue;
-        var searchDic = this.state.searchDic;
-        var pageDic = this.state.pageDic;
+        var searchDic = this.searchDic;
+        var pageDic = this.pageDic;
 
-        mta.Event.stat('freshman_wiki_search', { 'query': searchTerm })
+        if (process.env.TARO_ENV === 'weapp') {
+            wx.reportAnalytics('freshman_wiki_query', {
+                freshman_wiki_query: searchTerm
+            });
+        }
 
         if (searchTerm in searchDic) {
             var rawResult = JSON.parse(JSON.stringify(searchDic[searchTerm]))
@@ -128,7 +130,7 @@ class xssc extends Component {
             const currentSectionName = self.findSectionName(menuData, section)
             const currentSectionIndex = self.findSectionIndex(menuData, section)
             self.setState({ md: data, currentSection: section, currentSectionTitle: currentSectionName, currentSectionIndex: currentSectionIndex, drawerShow: false })
-            wx.setStorageSync(self.localStoreSectionKey, section);
+            Taro.setStorageSync(self.localStoreSectionKey, section);
         })
     }
 
@@ -184,22 +186,21 @@ class xssc extends Component {
     fetchSearchDic() {
         var self = this
         this.fetchContent(this.searchDicKey, function (searchDic) {
-            self.setState({ searchDic: searchDic })
-
+            self.searchDic = searchDic;
         })
         this.fetchContent(this.pageDicKey, function (pageDic) {
-            self.setState({ pageDic: pageDic })
+            self.pageDic = pageDic;
         })
     }
 
     fetchContent(key, callback) {
         var self = this;
         var url = this.apiPath + key;
-        wx.request({
+        Taro.request({
             url: url,
             success: function (data) {
                 if (key !== self.currentSection) {
-                    wx.pageScrollTo({
+                    Taro.pageScrollTo({
                         scrollTop: 0,
                         duration: 300
                     });
@@ -250,6 +251,17 @@ class xssc extends Component {
                     items={this.state.menuNameListArray}
                 ></AtDrawer>
                 <wemark md={this.state.md} link highlight type='wemark' apipath={this.apiPath} />
+                <View style="margin: 32rpx;">
+                    <View style="text-align: center">
+                        <Image
+                            style="width: 150rpx;height:150rpx;display: inline-block"
+                            src={CSSA_LOGO_2019_red_w400}></Image>
+                    </View>
+
+                    <View style="margin-top: 16rpx;">
+                        <Text style="color: #666;font-weight: bold; font-size: 0.9rem">手册系列文章由历届PSUCSSA、校友以及Penn State Global Office合作编写</Text>
+                    </View>
+                </View>
                 <View style={deviceModel == "iPhone X" ? bottomBarStyleIphoneX : bottomBarStyleNormal}>
                     <View style="display: flex;flex:1;justify-content: center;font-size: 34rpx;align-items:center;" onClick={this.prevSection}>
                         <Text class="at-icon at-icon-chevron-left" style="font-size:34rpx;color:#fff;font-weight: bold"></Text>

@@ -33,7 +33,8 @@ page {
 }
 
 .freshman-manual-index {
-    padding-top: 198px
+    padding-top: 198px;
+    padding-bottom: 300rpx;
 }
 
 .freshman-manual-index .at-drawer__content {

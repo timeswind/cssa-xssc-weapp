@@ -1,7 +1,5 @@
 .wemark_wrapper {
   margin: 32px 32px;
-  margin-bottom: 204rpx;
-  padding-bottom: 204rpx;
   font-size: 32rpx;
   line-height: 1.8em;
 }

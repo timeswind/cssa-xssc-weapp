@@ -1,8 +1,28 @@
 {
-    "rules": [
-      {
-        "action": "allow",
-        "page": "*"
-      }
-    ]
-  }
+  "rules": [
+    {
+      "action": "allow",
+      "page": "pages/xssc",
+      "params": [
+        "section"
+      ],
+      "matching": "inclusive"
+    },
+    {
+      "action": "allow",
+      "page": "pages/major_wiki",
+      "params": [
+        "section"
+      ],
+      "matching": "inclusive"
+    },
+    {
+      "action": "allow",
+      "page": "pages/about"
+    },
+    {
+      "action": "allow",
+      "page": "*"
+    }
+  ]
+}
