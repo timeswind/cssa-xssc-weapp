@@ -1,9 +1,9 @@
-var Remarkable = require('./remarkable');
-var RemarkableParser = new Remarkable({
-	html: true
-});
+var Remarkable = require('remarkable');
 
 function parse(md, options) {
+	var RemarkableParser = new Remarkable({
+		html: true
+	});
 	if (!options) options = {};
 	var tokens = RemarkableParser.parse(md, {});
 	var renderList = [];
@@ -221,7 +221,6 @@ function parse(md, options) {
 			renderList.push(block);
 		});
 	});
-
 	return renderList;
 }
 

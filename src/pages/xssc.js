@@ -3,39 +3,42 @@ import { View, Button, Text } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 import { AtDrawer, AtSearchBar, AtList, AtListItem } from 'taro-ui'
 import CSSA_LOGO_2019_red_w400 from "../images/CSSA_LOGO_2019_red_w400.png"
+import Markdown from '../components/markdown/markdown';
 
 @inject('globalStore')
 @observer
 class xssc extends Component {
 
-    apiPath = "https://idd.cssapsu.cn/books/freshman_wiki/"
-    menuMarkdownKey = "SUMMARY.md"
-    searchDicKey = "search.json"
-    pageDicKey = "page_dic.json"
-    localStoreSectionKey = "__xxsc_section"
-    shareName = " PSU新生手册"
-    pathPrefix = "pages/xssc"
-    searchDic = {};
-    pageDic = {};
+    constructor() {
+        super();
+        this.apiPath = "https://idd.cssapsu.cn/books/freshman_wiki/"
+        this.menuMarkdownKey = "SUMMARY.md"
+        this.searchDicKey = "search.json"
+        this.pageDicKey = "page_dic.json"
+        this.localStoreSectionKey = "__xxsc_section"
+        this.shareName = " PSU新生手册"
+        this.pathPrefix = "pages/xssc"
+        this.searchDic = {};
+        this.pageDic = {};
 
-    config = {
-        navigationBarTitleText: '新生手册',
-        usingComponents: {
-            wemark: '../wemark/wemark'
-        },
+        this.config = {
+            navigationBarTitleText: '新生手册'
+        }
+
+        this.state = {
+            md: '# 加载中...',
+            currentSectionIndex: -1,
+            currentSection: Taro.getStorageSync(this.localStoreSectionKey) || 'README.md',
+            currentSectionTitle: '',
+            drawerShow: false,
+            menuData: [],
+            menuNameListArray: [],
+            searchValue: "",
+            searchResults: []
+        }
     }
 
-    state = {
-        md: '# 加载中...',
-        currentSectionIndex: -1,
-        currentSection: Taro.getStorageSync(this.localStoreSectionKey) || 'README.md',
-        currentSectionTitle: '',
-        drawerShow: false,
-        menuData: [],
-        menuNameListArray: [],
-        searchValue: "",
-        searchResults: []
-    }
+
 
     componentWillMount() {
         if ('section' in this.$router.params) {
@@ -130,6 +133,7 @@ class xssc extends Component {
             const currentSectionName = self.findSectionName(menuData, section)
             const currentSectionIndex = self.findSectionIndex(menuData, section)
             self.setState({ md: data, currentSection: section, currentSectionTitle: currentSectionName, currentSectionIndex: currentSectionIndex, drawerShow: false })
+            self.setState({ drawerShow: false })
             Taro.setStorageSync(self.localStoreSectionKey, section);
         })
     }
@@ -218,11 +222,12 @@ class xssc extends Component {
 
     render() {
         const { globalStore: { deviceModel } } = this.props
+        const { md, searchValue, drawerShow, searchResults, menuNameListArray } = this.state;
         const bottomBarStyleIphoneX = { width: "100%", position: "fixed", bottom: "0", paddingBottom: "68rpx", height: "44px", background: "#EE5050", display: "flex", flexDirection: "row" }
         const bottomBarStyleNormal = { width: "100%", position: "fixed", bottom: "0px", height: "44px", background: "#EE5050", display: "flex", flexDirection: "row" }
         const searchResultRender = (
             <AtList>
-                {this.state.searchResults.map((result) =>
+                {searchResults.map((result) =>
                     <AtListItem title={result.title} onClick={this.handleSeachResultClick.bind(this, result.key)} arrow='right' key={result.key} />
                 )}
             </AtList>
@@ -231,7 +236,7 @@ class xssc extends Component {
             <View className='freshman-manual-index'>
                 <AtSearchBar
                     actionName='搜一下'
-                    value={this.state.searchValue}
+                    value={searchValue}
                     onChange={this.searchOnChange.bind(this)}
                     onActionClick={this.searchOnActionClick.bind(this)}
                 />
@@ -244,13 +249,13 @@ class xssc extends Component {
                 </Button>
 
                 <AtDrawer
-                    show={this.state.drawerShow}
+                    show={drawerShow}
                     mask
                     width={"90%"}
                     onItemClick={(index) => { this.menuClick(index) }}
-                    items={this.state.menuNameListArray}
+                    items={menuNameListArray}
                 ></AtDrawer>
-                <wemark md={this.state.md} link highlight type='wemark' apipath={this.apiPath} />
+                <Markdown md={md} link={true} highlight={true} type='wemark' apipath={this.apiPath}></Markdown>
                 <View style="margin: 32rpx;">
                     <View style="text-align: center">
                         <Image
@@ -259,7 +264,7 @@ class xssc extends Component {
                     </View>
 
                     <View style="margin-top: 16rpx;">
-                        <Text style="color: #666;font-weight: bold; font-size: 0.9rem">手册系列文章由历届PSUCSSA、校友以及Penn State Global Office合作编写</Text>
+                        <Text style="color: #666;font-weight: bold; font-size: 16px">手册系列文章由历届PSUCSSA、校友以及Penn State Global Office合作编写</Text>
                     </View>
                 </View>
                 <View style={deviceModel == "iPhone X" ? bottomBarStyleIphoneX : bottomBarStyleNormal}>

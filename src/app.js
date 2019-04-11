@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { Provider } from '@tarojs/mobx'
-import Index from './pages/index'
+import Index from './pages/index/index'
 import counterStore from './store/counter';
 import globalStore from './store/global';
 
@@ -25,21 +25,36 @@ const store = {
 
 class App extends Component {
 
-  config = {
-    pages: [
-      'pages/index/index',
-      'pages/about',
-      'pages/xssc',
-      'pages/major_wiki'
-    ],
-    window: {
-      backgroundTextStyle: 'light',
-      backgroundColor: '#ee5050',
-      navigationBarTitleText: 'CSSA 新手手册',
-      navigationBarTextStyle: 'black',
-      "navigationStyle": "custom"
+  constructor() {
+    super();
+    if (process.env.TARO_ENV === 'weapp') {
+      this.config = {
+        pages: [
+          'pages/index/index',
+          'pages/about',
+          'pages/xssc',
+          'pages/major_wiki'
+        ],
+        window: {
+          backgroundTextStyle: 'light',
+          backgroundColor: '#ee5050',
+          navigationBarTitleText: 'CSSA 新手手册',
+          navigationBarTextStyle: 'black',
+          "navigationStyle": "custom"
+        }
+      }
+    } else if (process.env.TARO_ENV === 'alipay') {
+      this.config = {
+        pages: [
+          'pages/index/index',
+          'pages/about',
+          'pages/xssc',
+          'pages/major_wiki'
+        ]
+      }
     }
   }
+
 
   componentDidMount() {
     Taro.getSystemInfo({

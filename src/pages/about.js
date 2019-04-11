@@ -1,13 +1,11 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
+import Markdown from '../components/markdown/markdown';
 
 class About extends Component {
 
     config = {
         navigationBarTitleText: '关于我们',
-        usingComponents: {
-            wemark: '../wemark/wemark'
-        }
     }
 
     state = {
@@ -48,7 +46,7 @@ class About extends Component {
                     <Image src="https://idd.cssapsu.cn/images/部门小萨合集_w1000.png" mode="widthFix" />
 
                 </View>
-                <wemark md={this.state.md} link highlight type='wemark' />
+                <Markdown md={this.state.md} link highlight type='wemark' />
             </View >
         )
     }

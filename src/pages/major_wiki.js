@@ -3,6 +3,7 @@ import { View, Button, Text } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 import { AtDrawer, AtSearchBar, AtList, AtListItem } from 'taro-ui'
 import CSSA_LOGO_2019_red_w400 from "../images/CSSA_LOGO_2019_red_w400.png"
+import Markdown from '../components/markdown/markdown';
 
 @inject('globalStore')
 @observer
@@ -19,10 +20,7 @@ class majorWiki extends Component {
     pageDic = {}
 
     config = {
-        navigationBarTitleText: '专业百科',
-        usingComponents: {
-            wemark: '../wemark/wemark'
-        },
+        navigationBarTitleText: '专业百科'
     }
 
     state = {
@@ -250,16 +248,24 @@ class majorWiki extends Component {
                     onItemClick={(index) => { this.menuClick(index) }}
                     items={this.state.menuNameListArray}
                 ></AtDrawer>
-                <wemark md={this.state.md} link highlight type='wemark' apipath={this.apiPath} />
+                <Markdown md={this.state.md} link highlight type='wemark' apipath={this.apiPath} />
+                <View style="text-align: right;margin-right: 32rpx;font-weight: bold; border-top: 1px solid #ddd;padding-top:16px">
+                    <View>
+                        <Text style="color: #999">信息错误？信息不全？</Text>
+                    </View>
+                    <View>
+                        <Text style="color: #999">我们希望得到你的反馈！</Text>
+                    </View>
+                    <Button class='contact-btn' style="margin-top: 32rpx;margin-right: 16rpx" open-type='contact'>联系我们</Button>
+                </View>
                 <View style="margin: 32rpx;">
-                    <View style="text-align: center">
+                    <View style="text-align: right">
                         <Image
-                            style="width: 150rpx;height:150rpx;display: inline-block"
+                            style="width: 150rpx;height:150rpx;display: inline-block;margin-right:8px;                            "
                             src={CSSA_LOGO_2019_red_w400}></Image>
                     </View>
-
-                    <View style="margin-top: 16rpx;">
-                        <Text style="color: #666;font-weight: bold; font-size: 0.9rem">手册系列文章由历届PSUCSSA、校友以及Penn State Global Office合作编写</Text>
+                    <View style="margin-top: 16rpx;text-align: right">
+                        <Text style="color: #666;font-weight: bold; font-size: 16px">手册系列文章由历届PSUCSSA、校友以及Penn State Global Office合作编写</Text>
                     </View>
                 </View>
                 <View style={deviceModel == "iPhone X" ? bottomBarStyleIphoneX : bottomBarStyleNormal}>

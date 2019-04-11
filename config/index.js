@@ -27,20 +27,13 @@ const config = {
   defineConstants: {
   },
   copy: {
-    patterns: [
-      {
-        from: 'src/wemark',
-        to: 'dist/wemark',
-      },
-    ],
+    patterns: [],
     options: {
     }
   },
   weapp: {
     compile: {
-      exclude: [
-        'src/wemark/remarkable.js',
-      ]
+      exclude: []
     },
     module: {
       postcss: {

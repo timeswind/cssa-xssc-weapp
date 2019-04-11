@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
+import { View, Text, Button } from '@tarojs/components'
 
 import './index.css'
 import CSSA_LOGO_2019_white_w400 from "../../images/CSSA_LOGO_2019_white_w400.png"
@@ -52,18 +52,18 @@ class IndexPage extends Component {
             <Text>关于我们</Text>
             <Text class="at-icon at-icon-chevron-right"></Text>
           </Text>
-          <Text className="color-deepred--cssa" style="font-size: 1.5rem; font-weight: bold">欢迎来到宾州州立！</Text>
+          <Text className="color-deepred--cssa" style="font-size: 32px; font-weight: bold">欢迎来到宾州州立！</Text>
         </View>
         <View className="navigationcard_wrapper" style="margin: 16px 16px 0 16px">
           <View className="navigationcard freshman-wiki-bg" onClick={() => this.navigate('/pages/xssc')}>
             <Text className="index-card-title">新生手册{this.state.year}</Text>
-            <Text style="font-weight: bold; color: #a02727">CSSA学术部</Text>
+            <Text style="font-weight: bold; color: #a02727; font-size: 18px;margin-top:4px;display: block">CSSA学术部</Text>
           </View>
         </View>
         <View className="navigationcard_wrapper" style="margin: 16px;margin-top:0;padding-top:0">
           <View className="navigationcard major-wiki-bg" onClick={() => this.navigate('/pages/major_wiki')}>
             <Text className="index-card-title">PSU专业百科</Text>
-            <Text style="font-weight: bold; color: #ffecb3">CSSA宣传部</Text>
+            <Text style="font-weight: bold; color: #ffecb3; font-size: 18px;margin-top:4px;display: block">CSSA宣传部</Text>
           </View>
         </View>
         <View style="text-align: right;margin-right: 32rpx;font-weight: bold">
@@ -78,7 +78,7 @@ class IndexPage extends Component {
               我们希望得到你的反馈！
         </Text>
           </View>
-          <button class='contact-btn' style="margin-top: 32rpx;margin-right: 16rpx" open-type='contact'>联系我们</button>
+          <Button class='contact-btn' style="margin-top: 32rpx;margin-right: 16rpx" open-type='contact'>联系我们</Button>
         </View>
       </View >
     )
