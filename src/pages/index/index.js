@@ -54,7 +54,7 @@ class IndexPage extends Component {
           </Text>
           <Text className="color-deepred--cssa" style="font-size: 32px; font-weight: bold">欢迎来到宾州州立！</Text>
         </View>
-        <View className="navigationcard_wrapper" style="margin: 16px 16px 0 16px">
+        <View className="navigationcard_wrapper" style="margin: 16px">
           <View className="navigationcard freshman-wiki-bg" onClick={() => this.navigate('/pages/xssc')}>
             <Text className="index-card-title">新生手册{this.state.year}</Text>
             <Text style="font-weight: bold; color: #a02727; font-size: 18px;margin-top:4px;display: block">CSSA学术部</Text>
@@ -79,7 +79,11 @@ class IndexPage extends Component {
         </Text>
           </View>
           <Button class='contact-btn' style="margin-top: 32rpx;margin-right: 16rpx" open-type='contact'>联系我们</Button>
+
         </View>
+        <View onClick={() => this.navigate('/pages/yearbook/menu')} style="padding: 8px 0; border-top: 1px solid #ddd;border-bottom: 1px solid #ddd;margin-top: 16px; color: #333">
+              CSSA历年年鉴
+          </View>
       </View >
     )
   }

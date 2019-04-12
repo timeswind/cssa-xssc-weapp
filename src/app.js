@@ -33,7 +33,9 @@ class App extends Component {
           'pages/index/index',
           'pages/about',
           'pages/xssc',
-          'pages/major_wiki'
+          'pages/major_wiki',
+          'pages/yearbook/menu',
+          'pages/yearbook/reader'
         ],
         window: {
           backgroundTextStyle: 'light',
