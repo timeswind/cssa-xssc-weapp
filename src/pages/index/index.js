@@ -81,8 +81,8 @@ class IndexPage extends Component {
           <Button class='contact-btn' style="margin-top: 32rpx;margin-right: 16rpx" open-type='contact'>联系我们</Button>
 
         </View>
-        <View onClick={() => this.navigate('/pages/yearbook/menu')} style="padding: 8px 0; border-top: 1px solid #ddd;border-bottom: 1px solid #ddd;margin-top: 16px; color: #333">
-              CSSA历年年鉴
+        <View onClick={() => this.navigate('/pages/yearbook/menu')} className="cssa_yearbook_menu_button">
+          CSSA历年年鉴
           </View>
       </View >
     )

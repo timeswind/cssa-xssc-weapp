@@ -7,7 +7,6 @@ function parse(md, options) {
 	if (!options) options = {};
 	var tokens = RemarkableParser.parse(md, {});
 	var renderList = [];
-
 	var env = [];
 	var listLevel = 0;
 	var orderNum = [0, 0];
@@ -37,7 +36,7 @@ function parse(md, options) {
 				}
 			}
 		} else {
-			inlineToken.children && inlineToken.children.forEach(function (token, index) {
+			inlineToken.children && inlineToken.children.forEach(function (token) {
 				if (['text', 'code'].indexOf(token.type) > -1) {
 					ret.push({
 						type: env || token.type,

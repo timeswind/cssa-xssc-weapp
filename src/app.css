@@ -108,6 +108,10 @@ page {
     white-space: normal;
 }
 
+.at-list__item::after {
+    border-color: #ddd;
+}
+
 .at-search-bar {
     background: #f4f4f7 !important;
 }

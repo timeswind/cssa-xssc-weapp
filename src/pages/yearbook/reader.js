@@ -45,16 +45,19 @@ class YearBookReader extends Component {
         if ('section' in this.$router.params) {
             if ('version' in this.$router.params) {
                 this.version = this.$router.params.version;
+                this.apiPath = this.apiPath + this.$router.params.version + '/'
+
                 this.fetchSection(this.$router.params.section);
             }
         } else {
             if ('version' in this.$router.params) {
                 this.version = this.$router.params.version;
-                this.fetchSection('README.md')
+                this.apiPath = this.apiPath + this.$router.params.version + '/'
+
+                this.fetchSection(this.defaultPageKey)
             }
         }
         if ('version' in this.$router.params) {
-            this.version = this.$router.params.version;
             this.fetchMenu(this.menuMarkdownKey + '?t=' + new Date().getTime())
             this.fetchSearchDic()
         }
@@ -211,7 +214,7 @@ class YearBookReader extends Component {
 
     fetchContent(key, callback) {
         var self = this;
-        var url = this.apiPath + this.version + '/' + key;
+        var url = this.apiPath + key;
         Taro.request({
             url: url,
             success: function (data) {

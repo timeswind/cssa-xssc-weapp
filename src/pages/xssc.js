@@ -2,8 +2,8 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 import { AtDrawer, AtSearchBar, AtList, AtListItem } from 'taro-ui'
-import CSSA_LOGO_2019_red_w400 from "../images/CSSA_LOGO_2019_red_w400.png"
 import Markdown from '../components/markdown/markdown';
+import InfoFooter from '../components/footerinfo';
 
 @inject('globalStore')
 @observer
@@ -220,6 +220,10 @@ class xssc extends Component {
         })
     }
 
+    innerLinkClick(innerlink) {
+        console.log(innerlink)
+    }
+
     render() {
         const { globalStore: { deviceModel } } = this.props
         const { md, searchValue, drawerShow, searchResults, menuNameListArray } = this.state;
@@ -255,18 +259,8 @@ class xssc extends Component {
                     onItemClick={(index) => { this.menuClick(index) }}
                     items={menuNameListArray}
                 ></AtDrawer>
-                <Markdown md={md} link={true} highlight={true} type='wemark' apipath={this.apiPath}></Markdown>
-                <View style="margin: 32rpx;">
-                    <View style="text-align: center">
-                        <Image
-                            style="width: 150rpx;height:150rpx;display: inline-block"
-                            src={CSSA_LOGO_2019_red_w400}></Image>
-                    </View>
-
-                    <View style="margin-top: 16rpx;">
-                        <Text style="color: #666;font-weight: bold; font-size: 16px">手册系列文章由历届PSUCSSA、校友以及Penn State Global Office合作编写</Text>
-                    </View>
-                </View>
+                <Markdown md={md} link={true} highlight={true} type='wemark' apipath={this.apiPath} innerLinkClick={innerlink => this.innerLinkClick(innerlink)}></Markdown>
+                <InfoFooter></InfoFooter>
                 <View style={deviceModel == "iPhone X" ? bottomBarStyleIphoneX : bottomBarStyleNormal}>
                     <View style="display: flex;flex:1;justify-content: center;font-size: 34rpx;align-items:center;" onClick={this.prevSection}>
                         <Text class="at-icon at-icon-chevron-left" style="font-size:34rpx;color:#fff;font-weight: bold"></Text>

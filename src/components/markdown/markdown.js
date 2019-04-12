@@ -20,11 +20,33 @@ class Markdown extends Component {
         this.parseMd(nextProps.md);
     }
 
+    imageClick(event) {
+        var url = event.target.dataset.src
+        Taro.previewImage({
+            current: url,
+            urls: [url]
+        })
+    }
+
     parseMd(md) {
         var parsedData = parser.parse(md, { "apipath": this.props.apipath, "link": this.props.link });
         this.setState({
             parsedData
         })
+    }
+
+    linkClick(event) {
+        event.stopPropagation();
+        if ('link' in event.target.dataset) {
+            Taro.setClipboardData({ data: event.target.dataset.link })
+        }
+    }
+
+    innerLinkClick(event) {
+        event.stopPropagation();
+        if ('link' in event.target.dataset) {
+            this.props.innerLinkClick(event.target.dataset.link)
+        }
     }
 
     render() {
@@ -39,15 +61,21 @@ class Markdown extends Component {
                                 renderBlock.content.map((renderInline, index) => (
                                     <View key={index} style="display: inline">
                                         {(renderInline.type === 'text' || renderInline.type === 'code' || renderInline.type === 'strong' || renderInline.type === 'deleted' || renderInline.type === 'em' || renderInline.type === 'table_th' || renderInline.type === 'table_td')
-                                            && (<Text className={'wemark_inline_' + renderInline.type} selectable="true">{renderInline.content}</Text>)}
+                                            && (<View style="display: inline">
+                                                {renderInline.data.href ? (
+                                                    <Text className={'wemark_inline_' + renderInline.type + ' wemark_inline_link'} selectable="true" data-link={renderInline.data.href} onClick={this.innerLinkClick.bind()}>{renderInline.content}</Text>
+                                                ) : (
+                                                        <Text className={'wemark_inline_' + renderInline.type} selectable="true">{renderInline.content}</Text>
+                                                    )}
+                                            </View>)}
                                         {(renderInline.type && renderBlock.highlight)
                                             && (<Text className={'wemark_inline_code_' + renderInline.type} selectable="true">{renderInline.content}</Text>)}
                                         {(!renderInline.type)
                                             && (<Text className="wemark_inline_code_text" selectable="true">{renderInline}</Text>)}
                                         {(renderInline.type === 'link')
-                                            && (<Text className="wemark_inline_link" selectable="true" data-link={renderInline.content}>{renderInline.content}</Text>)}
+                                            && (<Text className="wemark_inline_link" selectable="true" data-link={renderInline.content} onClick={this.linkClick.bind()}>{renderInline.content}</Text>)}
                                         {(renderInline.type === 'image')
-                                            && (<Image mode="widthFix" className="wemark_inline_image" src={renderInline.src} lazy-load="true"></Image>)}
+                                            && (<Image mode="widthFix" className="wemark_inline_image" src={renderInline.src} lazy-load="true" data-src={renderInline.src} onClick={this.imageClick.bind()}></Image>)}
                                     </View>
                                 ))
                             ) : (

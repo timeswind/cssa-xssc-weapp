@@ -74,8 +74,8 @@ class YearBookMenu extends Component {
                     <Text className="color-deepred--cssa" style="font-size: 1.5rem; font-weight: bold">CSSA历年年鉴</Text>
 
                 </View>
-                {list.map((name, index) =>
-                    <View className="navigationcard_wrapper" style="margin: 16px" key={index}>
+                {list.map((name) =>
+                    <View className="navigationcard_wrapper" style="margin: 16px" key={name}>
                         <View className="navigationcard" onClick={() => this.navigate('/pages/yearbook/reader?version=' + name)}>
                             <Text className="title">{name === "master" ? "年鉴简介" : name}</Text>
                             <Text style="font-weight: bold; color: #a02727; font-size: 18px;margin-top:4px;display: block">Penn State CSSA</Text>

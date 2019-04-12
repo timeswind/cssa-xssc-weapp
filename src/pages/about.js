@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import Markdown from '../components/markdown/markdown';
+import InfoFooter from '../components/footerinfo';
 
 class About extends Component {
 
@@ -21,7 +22,7 @@ class About extends Component {
         `
     }
 
-    componentWillMount() {}
+    componentWillMount() { }
 
     componentWillReact() { }
 
@@ -44,9 +45,9 @@ class About extends Component {
                 </View>
                 <View style="text-align:center; padding: 64rpx 32rpx 32rpx 32rpx">
                     <Image src="https://idd.cssapsu.cn/images/部门小萨合集_w1000.png" mode="widthFix" />
-
                 </View>
-                <Markdown md={this.state.md} link highlight type='wemark' />
+                <Markdown md={this.state.md} type='wemark' />
+                <InfoFooter></InfoFooter>
             </View >
         )
     }

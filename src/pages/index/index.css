@@ -1,29 +1,43 @@
 .index-top-bg {
     background-image: url("https://idd.cssapsu.cn/images/index_bg_op10.png");
-    background-size: 200%
+    background-size: 150%
 }
 
 .major-wiki-bg {
-    background:#ffc107;
+    background: #ffc107;
     background-image: url("https://idd.cssapsu.cn/images/major_wiki_bg.png");
+}
+
+.freshman-wiki-bg {
+    background: #ee5050;
+    background-image: url("https://idd.cssapsu.cn/images/freshman_wiki_bg.png");
+}
+
+.major-wiki-bg, .freshman-wiki-bg {
     background-size: 25%;
     background-repeat: no-repeat;
     background-position: 95%;
 }
 
-.freshman-wiki-bg {
-    background:#ee5050;
-    background-image: url("https://idd.cssapsu.cn/images/freshman_wiki_bg.png");
-    background-size: 25%;
-    background-repeat: no-repeat;
-    background-position: 92%;
-}
-
 .index-card-title {
-    font-weight: bold; color: #fff;display: block; font-size: 64rpx;text-shadow: 1px 1px 1px #333;
+    font-weight: bold;
+    color: #fff;
+    display: block;
+    font-size: 64rpx;
+    text-shadow: 1px 1px 1px #333;
 }
 
 .index-title {
     text-align: left;
     padding: 200px 0 16px 0;
+}
+
+.cssa_yearbook_menu_button {
+    padding: 16px 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    margin-top: 32px;
+    color: #999;
+    font-weight: bold;
+    font-size: 36px;
 }
