@@ -9,7 +9,7 @@ class xssc extends Component {
     constructor() {
         super();
         this.config = {
-            navigationBarTitleText: '新生手册'
+            navigationBarTitleText: 'PSU专业百科'
         }
 
         this.readerConfig = {
@@ -29,7 +29,7 @@ class xssc extends Component {
     }
 
     componentWillMount() {
-        if (Object.keys(this.$router.params).length !== 0) {
+        if (this.$router && 'params' in this.$router && Object.keys(this.$router.params).length !== 0) {
             this.setState({ params: this.$router.params })
         }
     }
@@ -45,7 +45,7 @@ class xssc extends Component {
 
     render() {
         return (
-            <MarkdownReader config={this.readerConfig} params={params}></MarkdownReader>
+            <MarkdownReader config={this.readerConfig} params={params} showSearchBar={true}></MarkdownReader>
         )
     }
 }

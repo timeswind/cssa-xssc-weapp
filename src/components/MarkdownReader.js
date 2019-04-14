@@ -22,6 +22,7 @@ class MarkdownReader extends Component {
         this.shareName = props.config.shareName
         this.pathPrefix = props.config.pathPrefix
         this.defaultSectionKey = props.config.defaultSectionKey
+        this.version = props.config.version || false
         this.searchDic = {};
         this.pageDic = {};
         this.menuData = [];
@@ -39,24 +40,31 @@ class MarkdownReader extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log('componentWillReceiveProps')
         this.handleProps(nextProps)
     }
 
     handleProps(props) {
-        const { params } = props
+        const { params, config } = props
+        if ('version' in params) {
+            this.version = params.version
+        }
 
         if ('section' in params) {
-            Taro.setStorageSync(props.config.localStoreSectionKey, params.section);
+            Taro.setStorageSync(config.localStoreSectionKey, params.section);
             this.fetchSection(params.section);
         } else {
-            this.fetchSection(Taro.getStorageSync(props.config.localStoreSectionKey) || props.config.defaultSectionKey)
+            var targetSection = Taro.getStorageSync(config.localStoreSectionKey) || config.defaultSectionKey
+            if (targetSection) {
+                this.fetchSection(targetSection)
+            }
         }
 
         if (Object.keys(this.searchDic).length === 0) {
             this.fetchSearchDic()
         }
         if (this.menuData.length === 0) {
-            this.fetchMenu(props.config.menuMarkdownKey + '?t=' + new Date().getTime())
+            this.fetchMenu(config.menuMarkdownKey + '?t=' + new Date().getTime())
         }
     }
 
@@ -166,23 +174,42 @@ class MarkdownReader extends Component {
     }
 
     prevSection = () => {
+        if (process.env.TARO_ENV === 'weapp') {
+            wx.reportAnalytics('freshman_wiki_switch_page', {
+                op: 'prev',
+            });
+        }
         var currentSectionIndex = this.findSectionIndex(this.menuData, this.state.currentSection)
         if (currentSectionIndex !== -1 && currentSectionIndex !== 0) {
-            this.menuClick(currentSectionIndex - 1)
+            this.fetchSectionByIndex(currentSectionIndex - 1)
         }
     }
 
     nextSection = () => {
+        if (process.env.TARO_ENV === 'weapp') {
+            wx.reportAnalytics('freshman_wiki_switch_page', {
+                op: 'next',
+            });
+        }
         var currentSectionIndex = this.findSectionIndex(this.menuData, this.state.currentSection)
         if (currentSectionIndex !== -1 && currentSectionIndex !== (this.menuData.length - 1)) {
-            this.menuClick(currentSectionIndex + 1)
+            this.fetchSectionByIndex(currentSectionIndex + 1)
         }
+    }
+
+    fetchSectionByIndex(index) {
+        var section = this.menuData[index]["key"]
+        this.fetchSection(section)
     }
 
 
     menuClick(index) {
-        var section = this.menuData[index]["key"]
-        this.fetchSection(section)
+        if (process.env.TARO_ENV === 'weapp') {
+            wx.reportAnalytics('freshman_wiki_switch_page', {
+                op: 'menu',
+            });
+        }
+        this.fetchSectionByIndex(index)
     }
 
     fetchMenu(menuKey) {
@@ -209,18 +236,25 @@ class MarkdownReader extends Component {
     }
 
     fetchSearchDic() {
-        var self = this
-        this.fetchContent(this.searchDicKey, function (searchDic) {
-            self.searchDic = searchDic;
-        })
-        this.fetchContent(this.pageDicKey, function (pageDic) {
-            self.pageDic = pageDic;
-        })
+        const { showSearchBar } = this.props
+        if (showSearchBar && this.searchDicKey && this.pageDic) {
+            var self = this
+            this.fetchContent(this.searchDicKey, function (searchDic) {
+                self.searchDic = searchDic;
+            })
+            this.fetchContent(this.pageDicKey, function (pageDic) {
+                self.pageDic = pageDic;
+            })
+        }
     }
 
     fetchContent(key, callback) {
         var self = this;
-        var url = this.apiPath + key;
+        var url = this.apiPath;
+        if (this.version) {
+            url = this.apiPath + this.version + '/'
+        }
+        url = url + key
         const { globalStore } = this.props
         globalStore.setToView("")
         Taro.request({
@@ -256,18 +290,20 @@ class MarkdownReader extends Component {
     }
 
     render() {
-        const { globalStore: { deviceModel } } = this.props
+        const { globalStore: { deviceModel }, showSearchBar } = this.props
         const { md, drawerShow, searchResults, menuNameListArray } = this.state;
         const bottomBarStyleIphoneX = { width: "100%", position: "fixed", bottom: "0", paddingBottom: "68rpx", height: "44px", background: "#EE5050", display: "flex", flexDirection: "row" }
         const bottomBarStyleNormal = { width: "100%", position: "fixed", bottom: "0px", height: "44px", background: "#EE5050", display: "flex", flexDirection: "row" }
 
         return (
             <View className='freshman-manual-index'>
-                <ReaderSearchBar
-                    searchResults={searchResults}
-                    handleSeachResultClick={sectionKey => this.handleSeachResultClick(sectionKey)}
-                    searchOnActionClick={valueToSearch => this.searchOnActionClick(valueToSearch)}
-                    clearSearchResult={() => this.clearSearchResult()}></ReaderSearchBar>
+                {showSearchBar && (
+                    <ReaderSearchBar
+                        searchResults={searchResults}
+                        handleSeachResultClick={sectionKey => this.handleSeachResultClick(sectionKey)}
+                        searchOnActionClick={valueToSearch => this.searchOnActionClick(valueToSearch)}
+                        clearSearchResult={() => this.clearSearchResult()}></ReaderSearchBar>
+                )}
                 <Button class="xssc-home-button" onClick={() => this.redirectTo('/pages/index/index')}>
                     <Text class="at-icon at-icon-home" style="font-size:34rpx;color:#fff;font-weight: bold">首页</Text>
                 </Button>
@@ -310,7 +346,8 @@ MarkdownReader.defaultProps = {
     config: {
         localStoreSectionKey: ""
     },
-    params: {}
+    params: {},
+    showSearchBar: false
 };
 
 export default MarkdownReader 

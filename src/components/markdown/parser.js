@@ -98,14 +98,15 @@ function parse(md, options) {
 			var token_name = tokens[index + 1]["content"]
 			if (blockToken.hLevel === 2 && token_name) {
 				var token_id = token_name.replace(/^\d+\.\s*/, '');
-				token_id = token_id.replace(/\s/g, ''); // replace white space
+				token_id = token_id.replace(/\s/g, ''); // replace white space for id only
+
 				token_id = token_id.replace(/[.,\/|\\#!$%\^&\*;:{}=\-_`~()（）？?！，：]/g, "")
 				token_name = token_name.replace(/[.,\/|\\#!$%\^&\*;:{}=\-_`~()（）？?！，：]/g, "")
 
 				if (pinyin.isSupported()) {
 					token_id = pinyin.convertToPinyin(token_id) // WO
 				}
-				console.log(token_id)
+
 				var quickNavObj = {
 					name: token_name,
 					id: 'id' + token_id

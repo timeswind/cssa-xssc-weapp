@@ -18,6 +18,15 @@
     },
     {
       "action": "allow",
+      "page": "pages/yearbook/reader",
+      "params": [
+        "version",
+        "section"
+      ],
+      "matching": "inclusive"
+    },
+    {
+      "action": "allow",
       "page": "pages/about"
     },
     {

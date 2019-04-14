@@ -6,6 +6,7 @@ const globalStore = observable({
   currentSectionTitle: '',
   currentSection: '',
   toView: 'toView',
+  yearbookVersion: '', //default version
   setDevice(device_name) {
     this.deviceModel = device_name
   },
@@ -20,6 +21,9 @@ const globalStore = observable({
   },
   setToView(toView) {
     this.toView = toView
+  },
+  setYearbookVersion(version) {
+    this.yearbookVersion = version;
   }
 })
 export default globalStore
