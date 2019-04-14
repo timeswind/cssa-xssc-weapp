@@ -30,16 +30,14 @@ class Markdown extends Component {
         if (this.state.quickNavData !== nextState.quickNavData) {
             return true
         }
-        if (this.props.globalStore.toView !== nextState.props.globalStore.toView) {
-            return true
-        }
 
         return false
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!nextProps.md) return false;
-        this.parseMd(nextProps.md);
+        if (this.props.md !== nextProps.md) {
+            this.parseMd(nextProps.md);
+        }
     }
 
     imageClick(event) {
@@ -80,18 +78,17 @@ class Markdown extends Component {
         }
     }
 
-    onScroll(event) {
-        // console.log(event)
-        // const { globalStore } = this.props
-        // globalStore.setToView("")
-    }
-
     render() {
         const { globalStore: { windowHeight, toView } } = this.props
         var { type, quickNav, showFooter } = this.props;
         var { parsedData, quickNavData } = this.state;
         return (
-            <ScrollView style={'height: ' + windowHeight + 'px;'} scrollY={true} scrollX={false} scrollIntoView={toView} scrollWithAnimation={true} scrollTop='0' onScroll={this.onScroll.bind()} enableBackToTop={true}>
+            <ScrollView style={'height: ' + windowHeight + 'px;'}
+                scrollY={true}
+                scrollX={false}
+                scrollIntoView={toView}
+                scrollWithAnimation={true}
+                enableBackToTop={true}>
                 <View className="wemark_wrapper" id="top">
                     {(quickNav && quickNavData.length !== 0) && (
                         <View style="margin-bottom: 16px">

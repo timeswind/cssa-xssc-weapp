@@ -55,7 +55,11 @@ page {
 }
 
 .navigationcard .title {
-    font-weight: bold; color: #fff;display: block; font-size: 64rpx;text-shadow: 1px 1px 1px #333;
+    font-weight: bold;
+    color: #fff;
+    display: block;
+    font-size: 64rpx;
+    text-shadow: 1px 1px 1px #333;
 }
 
 .xssc-share-button {
@@ -133,6 +137,12 @@ page {
     border: none !important;
 }
 
-.reader-search-bar {
+.reader-search-bar {}
 
+.reader_bottom_control {
+    color: #ffffff;
+}
+
+.reader_bottom_control_inactive {
+    color: #a02727;
 }

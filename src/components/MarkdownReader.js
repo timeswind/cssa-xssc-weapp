@@ -28,19 +28,18 @@ class MarkdownReader extends Component {
         this.menuData = [];
         this.toviewlock = false;
 
+        this.currentSection = Taro.getStorageSync(this.localStoreSectionKey) || this.defaultSectionKey
+
         this.state = {
             md: '# 加载中...',
-            currentSectionIndex: -1,
-            currentSection: Taro.getStorageSync(this.localStoreSectionKey) || this.defaultSectionKey,
-            currentSectionTitle: '',
             drawerShow: false,
             menuNameListArray: [],
-            searchResults: []
+            searchResults: [],
+            currentSectionIndex: -2
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('componentWillReceiveProps')
         this.handleProps(nextProps)
     }
 
@@ -77,13 +76,18 @@ class MarkdownReader extends Component {
             return true
         }
 
-        if (this.state.drawerShow !== nextState.drawerShow) {
+        if (this.state.drawerShow === !nextState.drawerShow) {
             return true
         }
 
         if (this.state.searchResults !== nextState.searchResults) {
             return true
         }
+
+        if (this.state.menuNameListArray !== nextState.menuNameListArray) {
+            return true
+        }
+
 
         if (this.props.params !== nextProps.params) {
             return true
@@ -116,7 +120,7 @@ class MarkdownReader extends Component {
 
     handleSeachResultClick(sectionKey) {
         this.fetchSection(sectionKey)
-        this.setState({ drawerShow: false, searchResults: [] })
+        this.setState({ searchResults: [] })
     }
 
     componentDidUpdate() {
@@ -160,9 +164,9 @@ class MarkdownReader extends Component {
             const currentSectionIndex = self.findSectionIndex(menuData, section)
             globalStore.setCurrentSectionTitle(currentSectionName)
             globalStore.setCurrentSection(section)
-            self.setState({ md: data, currentSection: section, currentSectionTitle: currentSectionName, currentSectionIndex: currentSectionIndex, drawerShow: false })
-            self.setState({ drawerShow: false })
-            Taro.setStorageSync(self.localStoreSectionKey, section);
+            self.currentSection = section
+            self.setState({ md: data, currentSectionIndex: currentSectionIndex })
+            Taro.setStorageSync(self.localStoreSectionKey, section)
         })
     }
 
@@ -173,13 +177,17 @@ class MarkdownReader extends Component {
         this.setState({ drawerShow: true })
     }
 
+    onMenuClose() {
+        this.setState({ drawerShow: false })
+    }
+
     prevSection = () => {
         if (process.env.TARO_ENV === 'weapp') {
             wx.reportAnalytics('freshman_wiki_switch_page', {
                 op: 'prev',
             });
         }
-        var currentSectionIndex = this.findSectionIndex(this.menuData, this.state.currentSection)
+        var currentSectionIndex = this.findSectionIndex(this.menuData, this.currentSection)
         if (currentSectionIndex !== -1 && currentSectionIndex !== 0) {
             this.fetchSectionByIndex(currentSectionIndex - 1)
         }
@@ -191,7 +199,7 @@ class MarkdownReader extends Component {
                 op: 'next',
             });
         }
-        var currentSectionIndex = this.findSectionIndex(this.menuData, this.state.currentSection)
+        var currentSectionIndex = this.findSectionIndex(this.menuData, this.currentSection)
         if (currentSectionIndex !== -1 && currentSectionIndex !== (this.menuData.length - 1)) {
             this.fetchSectionByIndex(currentSectionIndex + 1)
         }
@@ -271,6 +279,15 @@ class MarkdownReader extends Component {
         });
     }
 
+    backButtonOnClick() {
+        console.log(Taro.getCurrentPages().length)
+        if (Taro.getCurrentPages().length >= 2) {
+            Taro.navigateBack()
+        } else {
+            this.redirectTo('/pages/index/index')
+        }
+    }
+
     redirectTo = (path) => {
         Taro.redirectTo({
             url: path
@@ -291,7 +308,7 @@ class MarkdownReader extends Component {
 
     render() {
         const { globalStore: { deviceModel }, showSearchBar } = this.props
-        const { md, drawerShow, searchResults, menuNameListArray } = this.state;
+        const { md, drawerShow, searchResults, menuNameListArray, currentSectionIndex } = this.state;
         const bottomBarStyleIphoneX = { width: "100%", position: "fixed", bottom: "0", paddingBottom: "68rpx", height: "44px", background: "#EE5050", display: "flex", flexDirection: "row" }
         const bottomBarStyleNormal = { width: "100%", position: "fixed", bottom: "0px", height: "44px", background: "#EE5050", display: "flex", flexDirection: "row" }
 
@@ -304,7 +321,7 @@ class MarkdownReader extends Component {
                         searchOnActionClick={valueToSearch => this.searchOnActionClick(valueToSearch)}
                         clearSearchResult={() => this.clearSearchResult()}></ReaderSearchBar>
                 )}
-                <Button class="xssc-home-button" onClick={() => this.redirectTo('/pages/index/index')}>
+                <Button class="xssc-home-button" onClick={() => this.backButtonOnClick()}>
                     <Text class="at-icon at-icon-home" style="font-size:34rpx;color:#fff;font-weight: bold">首页</Text>
                 </Button>
                 <Button class="xssc-share-button" open-type="share" style={deviceModel == "iPhone X" ? {} : { bottom: "114rpx" }}>
@@ -314,6 +331,7 @@ class MarkdownReader extends Component {
                 <AtDrawer
                     show={drawerShow}
                     mask
+                    onClose={this.onMenuClose.bind(this)}
                     width={"90%"}
                     onItemClick={(index) => { this.menuClick(index) }}
                     items={menuNameListArray}
@@ -324,17 +342,21 @@ class MarkdownReader extends Component {
                     showFooter={true}></Markdown>
 
                 <View style={deviceModel == "iPhone X" ? bottomBarStyleIphoneX : bottomBarStyleNormal}>
-                    <View style="display: flex;flex:1;justify-content: center;font-size: 34rpx;align-items:center;" onClick={this.prevSection}>
-                        <Text class="at-icon at-icon-chevron-left" style="font-size:34rpx;color:#fff;font-weight: bold"></Text>
-                        <Text style="font-size:34rpx;color:#fff;font-weight: bold">上一章</Text>
+                    <View style="display: flex;flex:1;justify-content: center;font-size: 34rpx;align-items:center;"
+                        onClick={this.prevSection}
+                        className={currentSectionIndex === 0 ? "reader_bottom_control_inactive" : "reader_bottom_control"}>
+                        <Text class="at-icon at-icon-chevron-left" style="font-size:34rpx;color:inherit;font-weight: bold"></Text>
+                        <Text style="font-size:34rpx;color: inherit;font-weight: bold">上一章</Text>
                     </View>
                     <View style="display: flex;flex:1;justify-content: center;font-size: 34rpx;align-items:center;" onClick={this.openMenuDrawer}>
                         <Text class="at-icon at-icon-menu" style="font-size:34rpx;color:#fff;font-weight: bold"></Text>
                         <Text style="font-size:34rpx;color:#fff;font-weight: bold">目录</Text>
                     </View>
-                    <View style="display: flex;flex:1;justify-content: center;font-size: 34rpx;align-items:center;" onClick={this.nextSection}>
-                        <Text style="font-size:34rpx;color:#fff;font-weight: bold">下一章</Text>
-                        <Text class="at-icon at-icon-chevron-right" style="font-size:34rpx;color:#fff;font-weight: bold"></Text>
+                    <View style="display: flex;flex:1;justify-content: center;font-size: 34rpx;align-items:center;"
+                        onClick={this.nextSection}
+                        className={(menuNameListArray.length !== 0 && currentSectionIndex === (menuNameListArray.length - 1)) ? "reader_bottom_control_inactive" : "reader_bottom_control"}>
+                        <Text style="font-size:34rpx;font-weight: bold;color: inherit">下一章</Text>
+                        <Text class="at-icon at-icon-chevron-right" style="font-size:34rpx;font-weight: bold;color: inherit"></Text>
                     </View>
                 </View>
             </View >
