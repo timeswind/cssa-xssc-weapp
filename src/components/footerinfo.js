@@ -5,7 +5,7 @@ import { View, Button, Text } from '@tarojs/components'
 export default class FooterInfo extends Component {
     render() {
         return (
-            <View>
+            <View style="padding-bottom: 300rpx">
                 <View style="text-align: center;padding-right: 32rpx;font-weight: bold;padding:16px 0;border-top: 1px solid #ddd; border-bottom: 1px solid #ddd">
                     <View>
                         <Text style="color: #999">信息错误？信息不全？</Text>

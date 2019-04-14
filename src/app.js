@@ -65,6 +65,7 @@ class App extends Component {
         if (modelmes.search('iPhone X') != -1) {
           store.globalStore.setDevice("iPhone X")
         }
+        store.globalStore.setWindowHeight(res.windowHeight)
       }
     })
   }

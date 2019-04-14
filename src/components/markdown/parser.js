@@ -1,6 +1,8 @@
 var Remarkable = require('remarkable');
+var pinyin = require('tiny-pinyin')
 
 function parse(md, options) {
+	console.log("markdown parsing!")
 	var RemarkableParser = new Remarkable({
 		html: true
 	});
@@ -8,6 +10,7 @@ function parse(md, options) {
 	var tokens = RemarkableParser.parse(md, {});
 	var renderList = [];
 	var env = [];
+	var quickNavData = [];
 	var listLevel = 0;
 	var orderNum = [0, 0];
 	var tmp;
@@ -92,10 +95,37 @@ function parse(md, options) {
 		if (blockToken.type === 'htmlblock') {
 			return getInlineContent(blockToken);
 		} else if (blockToken.type === 'heading_open') {
-			return {
-				type: 'h' + blockToken.hLevel,
-				content: getInlineContent(tokens[index + 1])
-			};
+			var token_name = tokens[index + 1]["content"]
+			if (blockToken.hLevel === 2 && token_name) {
+				var token_id = token_name.replace(/^\d+\.\s*/, '');
+				token_id = token_id.replace(/\s/g, ''); // replace white space
+				token_id = token_id.replace(/[.,\/|\\#!$%\^&\*;:{}=\-_`~()（）？?！，：]/g, "")
+				token_name = token_name.replace(/[.,\/|\\#!$%\^&\*;:{}=\-_`~()（）？?！，：]/g, "")
+
+				if (pinyin.isSupported()) {
+					token_id = pinyin.convertToPinyin(token_id) // WO
+				}
+				console.log(token_id)
+				var quickNavObj = {
+					name: token_name,
+					id: 'id' + token_id
+				}
+				quickNavData.push(quickNavObj)
+
+				return {
+					type: 'h' + blockToken.hLevel,
+					quick_nav_id: quickNavObj.id,
+					content: getInlineContent(tokens[index + 1])
+				};
+			} else {
+				return {
+					type: 'h' + blockToken.hLevel,
+					content: getInlineContent(tokens[index + 1])
+				};
+			}
+
+
+
 		} else if (blockToken.type === 'paragraph_open') {
 			// var type = 'p';
 			var prefix = '';
@@ -220,7 +250,7 @@ function parse(md, options) {
 			renderList.push(block);
 		});
 	});
-	return renderList;
+	return { renderList, quickNavData };
 }
 
 module.exports = {
