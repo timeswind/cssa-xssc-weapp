@@ -2,6 +2,11 @@ page {
     background-color: #f4f4f7;
 }
 
+.main-top-bg {
+    background-image: url("https://idd.cssapsu.cn/images/index_bg_op10.png");
+    background-size: 150%
+}
+
 .bg-white--cssa {
     background-color: #f4f4f7;
 }

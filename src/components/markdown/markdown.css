@@ -145,6 +145,10 @@
   height: auto;
 }
 
+.wemark_inline_image_wrapper {
+  text-align: center
+}
+
 .wemark_inline_code {
   background: #f0f0f0;
   padding: 3px 5px;
@@ -153,4 +157,10 @@
 
 .wemark_inline_text {
   word-wrap: break-word;
+}
+
+.wemark_image_alt {
+  text-align: center;
+  color: #9DAAB6;
+  font-size: 16PX;
 }

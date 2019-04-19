@@ -122,7 +122,10 @@ class Markdown extends Component {
                                         {(renderInline.type === 'link')
                                             && (<Text className="wemark_inline_link" selectable="true" data-link={renderInline.content} onClick={this.linkClick.bind()}>{renderInline.content}</Text>)}
                                         {(renderInline.type === 'image')
-                                            && (<Image mode="widthFix" className="wemark_inline_image" src={renderInline.src} lazy-load="true" data-src={renderInline.src} onClick={this.imageClick.bind()}></Image>)}
+                                            && (<View className="wemark_inline_image_wrapper">
+                                                <Image mode="widthFix" className="wemark_inline_image" src={renderInline.src} lazy-load="true" data-src={renderInline.src} onClick={this.imageClick.bind()}></Image>
+                                                <Text className="wemark_image_alt">{renderInline.alt && renderInline.alt}</Text>
+                                            </View>)}
                                     </View>
                                 ))
                             ) : (

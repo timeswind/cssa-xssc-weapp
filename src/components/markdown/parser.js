@@ -1,8 +1,11 @@
 var Remarkable = require('remarkable');
 var pinyin = require('tiny-pinyin')
+const Entities = require('html-entities').AllHtmlEntities;
 
 function parse(md, options) {
 	console.log("markdown parsing!")
+	const entities = new Entities();
+
 	var RemarkableParser = new Remarkable({
 		html: true
 	});
@@ -69,6 +72,13 @@ function parse(md, options) {
 						};
 					}
 				} else if (token.type === 'image') {
+					var img_alt = ""
+
+					if (token.alt && token.alt.search("&#x") > -1) {
+						img_alt = entities.decode(token.alt);
+						img_alt = img_alt.replace('\\', '');
+					}
+
 					var splits = token.src.split('/')
 					var imageKey = splits[splits.length - 1]
 					var src = 'gitbook/assets/' + imageKey
@@ -80,6 +90,7 @@ function parse(md, options) {
 						ret.push({
 							type: token.type,
 							src: src,
+							alt: img_alt,
 							selectable: true
 						});
 					}

@@ -70,12 +70,12 @@ class YearBookMenu extends Component {
         const { globalStore: { statusBarHeight } } = this.props
 
         return (
-            <View className='index'>
+            <View>
                 <Button class="back-botton" onClick={() => Taro.navigateBack()} style={"top:" + (statusBarHeight + 8) + "px"}>
                     <Text class="at-icon at-icon-chevron-left" style="font-size:34rpx;color:#fff;font-weight: bold">返回</Text>
                 </Button>
-                <View className="bg-red--cssa index-top-bg" style="padding: 0 0 64rpx 64rpx;text-align: left;height: 400rpx;line-height:800rpx">
-                    <Text className="color-deepred--cssa" style="font-size: 1.5rem; font-weight: bold">CSSA历年年鉴</Text>
+                <View className="bg-red--cssa main-top-bg" style="padding: 0 0 64rpx 64rpx;text-align: left;height: 400rpx;line-height:800rpx">
+                    <Text className="color-deepred--cssa" style="font-size: 1.8rem; font-weight: bold">CSSA历年年鉴</Text>
 
                 </View>
                 {list.map((name) =>

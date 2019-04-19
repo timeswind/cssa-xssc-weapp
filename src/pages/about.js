@@ -6,6 +6,9 @@ import { observer, inject } from '@tarojs/mobx'
 @inject('globalStore')
 @observer
 class About extends Component {
+    static options = {
+        addGlobalClass: true
+    }
 
     config = {
         navigationBarTitleText: '关于我们',
@@ -40,12 +43,12 @@ class About extends Component {
         const { globalStore: { statusBarHeight } } = this.props
 
         return (
-            <View className='index'>
+            <View style="padding-bottom: 80px">
                 <Button class="back-botton" onClick={() => Taro.navigateBack()} style={"top:" + (statusBarHeight + 8) + "px"}>
                     <Text class="at-icon at-icon-chevron-left" style="font-size:34rpx;color:#fff;font-weight: bold"> 返回</Text>
                 </Button>
-                <View className="bg-red--cssa index-top-bg" style="padding: 0 0 64rpx 64rpx;text-align: left;height: 400rpx;line-height:800rpx">
-                    <Text className="color-deepred--cssa" style="font-size: 1.5rem; font-weight: bold">关于我们</Text>
+                <View className="bg-red--cssa main-top-bg" style="padding: 0 0 64rpx 64rpx;text-align: left;height: 400rpx;line-height:800rpx">
+                    <Text className="color-deepred--cssa" style="font-size: 1.8rem; font-weight: bold">关于我们</Text>
                 </View>
                 <View style="text-align:center; padding: 64rpx 0;">
                     <Image src="https://idd.cssapsu.cn/images/部门小萨合集_w1000.png" mode="widthFix" />
