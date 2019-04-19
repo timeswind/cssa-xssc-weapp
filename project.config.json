@@ -28,13 +28,27 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 2,
 			"list": [
 				{
 					"id": 0,
 					"name": "card",
 					"pathName": "pages/xssc",
-					"query": "from=share&section=di-mei-zhi-hou/tong-xun.md&toview=idSHOUJIYUNYINGSHANGXUANZE",
+					"query": "pages/xssc?from=share&section=di-mei-zhi-hou/kai-xue-zhun-bei.md&toview=idXIANGGUANZHANGHAOBANLI",
+					"scene": 1008
+				},
+				{
+					"id": 1,
+					"name": "yearbook master",
+					"pathName": "pages/yearbook/reader",
+					"query": "?from=share&section=README.md&version=master&toview=top",
+					"scene": 1008
+				},
+				{
+					"id": -1,
+					"name": "yearbook 2017 toview",
+					"pathName": "pages/yearbook/reader",
+					"query": "?from=share&section=wen-yu-bu.md&version=2017-2018&toview=idSUNYIRAN",
 					"scene": 1008
 				}
 			]

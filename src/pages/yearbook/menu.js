@@ -1,11 +1,13 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
+import { observer, inject } from '@tarojs/mobx'
 
+@inject('globalStore')
+@observer
 class YearBookMenu extends Component {
 
     apiPath = "https://idd.cssapsu.cn/books/yearbook/"
     menuKey = 'bookname.data'
-
 
     config = {
         navigationBarTitleText: 'CSSA年鉴目录',
@@ -64,11 +66,13 @@ class YearBookMenu extends Component {
     }
 
     render() {
-        const { list } = this.state
+        const { list } = this.state;
+        const { globalStore: { statusBarHeight } } = this.props
+
         return (
             <View className='index'>
-                <Button class="back-botton" onClick={() => Taro.navigateBack()}>
-                    <Text class="at-icon at-icon-chevron-left" style="font-size:34rpx;color:#fff;font-weight: bold"> 返回</Text>
+                <Button class="back-botton" onClick={() => Taro.navigateBack()} style={"top:" + (statusBarHeight + 8) + "px"}>
+                    <Text class="at-icon at-icon-chevron-left" style="font-size:34rpx;color:#fff;font-weight: bold">返回</Text>
                 </Button>
                 <View className="bg-red--cssa index-top-bg" style="padding: 0 0 64rpx 64rpx;text-align: left;height: 400rpx;line-height:800rpx">
                     <Text className="color-deepred--cssa" style="font-size: 1.5rem; font-weight: bold">CSSA历年年鉴</Text>

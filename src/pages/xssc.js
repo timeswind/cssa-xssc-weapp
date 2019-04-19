@@ -46,7 +46,7 @@ class xssc extends Component {
     render() {
         const { params } = this.state
         return (
-            <MarkdownReader config={this.readerConfig} params={params} showSearchBar={true}></MarkdownReader>
+            <MarkdownReader config={this.readerConfig} params={params} showSearchBar={true} showFooter={true}></MarkdownReader>
         )
     }
 }

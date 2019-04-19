@@ -32,11 +32,7 @@ page {
     z-index: 10;
 }
 
-.freshman-manual-index {
-    padding-top: 198px;
-}
-
-.freshman-manual-index .at-drawer__content {
+.at-drawer__content {
     padding-top: 200rpx;
 }
 
@@ -63,32 +59,27 @@ page {
 }
 
 .xssc-share-button {
-    height: 80rpx;
+    height: 36PX;
     background: #1b1b1b;
     color: #fff;
     text-align: center;
-    line-height: 80rpx;
+    line-height: 36PX;
     display: inline-block;
-    padding: 0 32rpx;
     position: fixed;
-    bottom: 198px;
-    right: 32rpx;
-    border-radius: 10rpx;
+    right: 16PX;
+    border-radius: 5PX;
     z-index: 99;
 }
 
 .xssc-home-button, .back-botton {
-    height: 80rpx;
+    height: 32PX;
     background: #1b1b1b;
     color: #fff;
     text-align: center;
-    line-height: 80rpx;
+    line-height: 32PX;
     display: inline-block;
-    padding: 0 32rpx;
     position: fixed;
-    top: 100rpx;
     left: 32rpx;
-    border-radius: 10rpx;
     z-index: 99;
 }
 
@@ -117,6 +108,7 @@ page {
 
 .at-search-bar {
     background: #f4f4f7 !important;
+    padding: 10PX 12PX;
 }
 
 .at-search-bar::after {

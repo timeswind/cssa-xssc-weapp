@@ -1,9 +1,11 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Button } from '@tarojs/components'
-
+import { View, Text, Button, ScrollView } from '@tarojs/components'
 import './index.css'
 import CSSA_LOGO_2019_white_w400 from "../../images/CSSA_LOGO_2019_white_w400.png"
+import { observer, inject } from '@tarojs/mobx'
 
+@inject('globalStore')
+@observer
 class IndexPage extends Component {
 
   config = {
@@ -84,7 +86,7 @@ class IndexPage extends Component {
         <View onClick={() => this.navigate('/pages/yearbook/menu')} className="cssa_yearbook_menu_button">
           CSSA历年年鉴
           </View>
-      </View >
+      </View>
     )
   }
 }

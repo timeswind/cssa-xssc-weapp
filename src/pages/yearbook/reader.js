@@ -16,6 +16,7 @@ class yearbookReader extends Component {
             apiPath: "https://idd.cssapsu.cn/books/yearbook/",
             menuMarkdownKey: "SUMMARY.md",
             localStoreSectionKey: "__yearbook_section",
+            localStoreVersionKey: "__yearbook_version",
             shareName: " PSUCSSA 年鉴",
             pathPrefix: "pages/yearbook/reader",
             defaultSectionKey: "README.md"
@@ -38,6 +39,7 @@ class yearbookReader extends Component {
 
     onShareAppMessage(res) {
         const { globalStore: { currentSection, currentSectionTitle, yearbookVersion, toView } } = this.props
+        console.log(this.readerConfig.pathPrefix + '?from=share&section=' + currentSection + '&version=' + yearbookVersion + '&toview=' + toView)
         return {
             title: currentSectionTitle + this.readerConfig.shareName,
             path: this.readerConfig.pathPrefix + '?from=share&section=' + currentSection + '&version=' + yearbookVersion + '&toview=' + toView

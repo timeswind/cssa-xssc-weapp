@@ -72,8 +72,8 @@ function parse(md, options) {
 					var splits = token.src.split('/')
 					var imageKey = splits[splits.length - 1]
 					var src = 'gitbook/assets/' + imageKey
-					if (options.apipath) {
-						src = options.apipath + src
+					if (options.imageServerEndpoint) {
+						src = options.imageServerEndpoint + src
 						if (token.src.search('https://') > -1 || token.src.search('data:image/') > -1) {
 							src = token.src
 						}

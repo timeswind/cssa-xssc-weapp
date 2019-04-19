@@ -66,6 +66,7 @@ class App extends Component {
           store.globalStore.setDevice("iPhone X")
         }
         store.globalStore.setWindowHeight(res.windowHeight)
+        store.globalStore.setStatusBarHeight(res.statusBarHeight)
       }
     })
   }

@@ -3,6 +3,7 @@ import { observable } from 'mobx'
 const globalStore = observable({
   deviceModel: "",
   windowHeight: 0,
+  statusBarHeight: 0,
   currentSectionTitle: '',
   currentSection: '',
   toView: 'toView',
@@ -12,6 +13,9 @@ const globalStore = observable({
   },
   setWindowHeight(height) {
     this.windowHeight = height
+  },
+  setStatusBarHeight(height) {
+    this.statusBarHeight = height
   },
   setCurrentSectionTitle(title) {
     this.currentSectionTitle = title

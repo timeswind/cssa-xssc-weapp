@@ -14,15 +14,33 @@ class MarkdownReader extends Component {
 
     constructor(props) {
         super(props);
+
+        //localstorage key
+        this.localStoreSectionKey = props.config.localStoreSectionKey
+        this.localStoreVersionKey = props.config.localStoreVersionKey
+
         this.apiPath = props.config.apiPath
+
+        this.contentServerEndpoint = props.config.apiPath
+        this.imageServerEndpoint = props.config.apiPath
+
+        this.version = props.config.version || props.params.version || false
+
+        if (this.version && this.version !== 'undefined') {
+            this.contentServerEndpoint = this.apiPath + this.version + '/'
+            this.imageServerEndpoint = this.apiPath + this.version + '/'
+        }
+
         this.menuMarkdownKey = props.config.menuMarkdownKey
         this.searchDicKey = props.config.searchDicKey
         this.pageDicKey = props.config.pageDicKey
-        this.localStoreSectionKey = props.config.localStoreSectionKey
+
+
+
         this.shareName = props.config.shareName
         this.pathPrefix = props.config.pathPrefix
         this.defaultSectionKey = props.config.defaultSectionKey
-        this.version = props.config.version || false
+
         this.searchDic = {};
         this.pageDic = {};
         this.menuData = [];
@@ -45,18 +63,25 @@ class MarkdownReader extends Component {
 
     handleProps(props) {
         const { params, config } = props
-        if ('version' in params) {
+        if ('version' in params && params.version !== 'undefined') {
+            console.log('version', params.version)
             this.version = params.version
+            this.contentServerEndpoint = this.apiPath + params.version + '/'
+            this.imageServerEndpoint = this.apiPath + params.version + '/'
         }
 
-        if ('section' in params) {
+        if ('section' in params && params.section !== 'undefined') {
             Taro.setStorageSync(config.localStoreSectionKey, params.section);
             this.fetchSection(params.section);
         } else {
             var targetSection = Taro.getStorageSync(config.localStoreSectionKey) || config.defaultSectionKey
-            if (targetSection) {
+            if (targetSection && targetSection !== 'undefined') {
                 this.fetchSection(targetSection)
             }
+        }
+
+        if ('version' in params && params.version !== 'undefined') {
+            Taro.setStorageSync(config.localStoreVersionKey, params.version);
         }
 
         if (Object.keys(this.searchDic).length === 0) {
@@ -156,18 +181,24 @@ class MarkdownReader extends Component {
     }
 
     fetchSection(section) {
-        const { globalStore } = this.props
-        var self = this;
-        const menuData = this.menuData;
-        this.fetchContent(section, function (data) {
-            const currentSectionName = self.findSectionName(menuData, section)
-            const currentSectionIndex = self.findSectionIndex(menuData, section)
-            globalStore.setCurrentSectionTitle(currentSectionName)
-            globalStore.setCurrentSection(section)
-            self.currentSection = section
-            self.setState({ md: data, currentSectionIndex: currentSectionIndex })
-            Taro.setStorageSync(self.localStoreSectionKey, section)
-        })
+        if (section) {
+            const { globalStore } = this.props
+            var self = this;
+            const menuData = this.menuData;
+            globalStore.setToView("")
+            this.fetchContent(section, function (data) {
+                const currentSectionName = self.findSectionName(menuData, section)
+                const currentSectionIndex = self.findSectionIndex(menuData, section)
+                globalStore.setCurrentSectionTitle(currentSectionName)
+                globalStore.setCurrentSection(section)
+                self.currentSection = section
+                self.setState({ md: data, currentSectionIndex: currentSectionIndex })
+                Taro.setStorageSync(self.localStoreSectionKey, section)
+            })
+        } else {
+            console.error('false section', section)
+        }
+
     }
 
     openMenuDrawer = () => {
@@ -258,13 +289,7 @@ class MarkdownReader extends Component {
 
     fetchContent(key, callback) {
         var self = this;
-        var url = this.apiPath;
-        if (this.version) {
-            url = this.apiPath + this.version + '/'
-        }
-        url = url + key
-        const { globalStore } = this.props
-        globalStore.setToView("")
+        var url = this.contentServerEndpoint + key;
         Taro.request({
             url: url,
             success: function (data) {
@@ -280,7 +305,6 @@ class MarkdownReader extends Component {
     }
 
     backButtonOnClick() {
-        console.log(Taro.getCurrentPages().length)
         if (Taro.getCurrentPages().length >= 2) {
             Taro.navigateBack()
         } else {
@@ -307,13 +331,14 @@ class MarkdownReader extends Component {
     }
 
     render() {
-        const { globalStore: { deviceModel }, showSearchBar } = this.props
+        const { globalStore: { deviceModel, statusBarHeight }, showSearchBar, showFooter } = this.props
         const { md, drawerShow, searchResults, menuNameListArray, currentSectionIndex } = this.state;
-        const bottomBarStyleIphoneX = { width: "100%", position: "fixed", bottom: "0", paddingBottom: "68rpx", height: "44px", background: "#EE5050", display: "flex", flexDirection: "row" }
-        const bottomBarStyleNormal = { width: "100%", position: "fixed", bottom: "0px", height: "44px", background: "#EE5050", display: "flex", flexDirection: "row" }
+        const bottomBarStyleIphoneX = { width: "100%", position: "fixed", bottom: "0", paddingBottom: "34PX", height: "44PX", background: "#EE5050", display: "flex", flexDirection: "row" }
+        const bottomBarStyleNormal = { width: "100%", position: "fixed", bottom: "0px", height: "44PX", background: "#EE5050", display: "flex", flexDirection: "row" }
+        const routerPageCount = Taro.getCurrentPages().length;
 
         return (
-            <View className='freshman-manual-index'>
+            <View className='markdown-reader' style={"padding-top:" + (statusBarHeight + 38) + "px"}>
                 {showSearchBar && (
                     <ReaderSearchBar
                         searchResults={searchResults}
@@ -321,11 +346,11 @@ class MarkdownReader extends Component {
                         searchOnActionClick={valueToSearch => this.searchOnActionClick(valueToSearch)}
                         clearSearchResult={() => this.clearSearchResult()}></ReaderSearchBar>
                 )}
-                <Button class="xssc-home-button" onClick={() => this.backButtonOnClick()}>
-                    <Text class="at-icon at-icon-home" style="font-size:34rpx;color:#fff;font-weight: bold">首页</Text>
+                <Button class="xssc-home-button" onClick={() => this.backButtonOnClick()} style={"top:" + (statusBarHeight + 8) + "px"}>
+                    <Text class="at-icon at-icon-home" style="font-size:16px;color:#fff;font-weight: bold">{routerPageCount >= 2 ? '返回' : '首页'}</Text>
                 </Button>
-                <Button class="xssc-share-button" open-type="share" style={deviceModel == "iPhone X" ? {} : { bottom: "114rpx" }}>
-                    <Text class="at-icon at-icon-share" style="font-size:34rpx;color:#fff;font-weight: bold">分享</Text>
+                <Button class="xssc-share-button" open-type="share" style={deviceModel == "iPhone X" ? { bottom: "92PX" } : { bottom: "52PX" }}>
+                    <Text class="at-icon at-icon-share" style="font-size:18px;color:#fff;font-weight: bold">分享</Text>
                 </Button>
 
                 <AtDrawer
@@ -336,10 +361,19 @@ class MarkdownReader extends Component {
                     onItemClick={(index) => { this.menuClick(index) }}
                     items={menuNameListArray}
                 ></AtDrawer>
-                <Markdown md={md} link={true} highlight={true} type='wemark' apipath={this.apiPath}
+                <Markdown
+                    md={md}
+                    bottomOffset={deviceModel == "iPhone X" ? 78 : 44}
+                    link={true}
+                    highlight={true}
+                    type='wemark'
+                    imageServerEndpoint={this.imageServerEndpoint}
                     innerLinkClick={innerlink => this.innerLinkClick(innerlink)}
                     quickNav={true}
-                    showFooter={true}></Markdown>
+                    showFooter={showFooter}
+                    topOffset={showSearchBar ? (statusBarHeight + 50 + 38) : (statusBarHeight + 38)}
+                >
+                </Markdown>
 
                 <View style={deviceModel == "iPhone X" ? bottomBarStyleIphoneX : bottomBarStyleNormal}>
                     <View style="display: flex;flex:1;justify-content: center;font-size: 34rpx;align-items:center;"
@@ -366,10 +400,12 @@ class MarkdownReader extends Component {
 
 MarkdownReader.defaultProps = {
     config: {
-        localStoreSectionKey: ""
+        localStoreSectionKey: "",
+        localStoreVersionKey: ""
     },
     params: {},
-    showSearchBar: false
+    showSearchBar: false,
+    showFooter: false
 };
 
 export default MarkdownReader 

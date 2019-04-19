@@ -1,0 +1,20 @@
+.foot-info-entry-key {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    margin: 8PX 0;
+}
+
+.foot-info-entry-value {
+    display: block;
+    font-weight: bold;
+    color: #ee5050;
+}
+
+.feedback-wrapper {
+    text-align: center;
+    font-weight: bold;
+    padding: 16PX 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd
+}

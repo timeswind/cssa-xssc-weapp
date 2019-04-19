@@ -1,8 +1,10 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import Markdown from '../components/markdown/markdown';
-import InfoFooter from '../components/footerinfo';
+import { observer, inject } from '@tarojs/mobx'
 
+@inject('globalStore')
+@observer
 class About extends Component {
 
     config = {
@@ -35,19 +37,20 @@ class About extends Component {
     componentDidHide() { }
 
     render() {
+        const { globalStore: { statusBarHeight } } = this.props
+
         return (
             <View className='index'>
-                <Button class="back-botton" onClick={() => Taro.navigateBack()}>
+                <Button class="back-botton" onClick={() => Taro.navigateBack()} style={"top:" + (statusBarHeight + 8) + "px"}>
                     <Text class="at-icon at-icon-chevron-left" style="font-size:34rpx;color:#fff;font-weight: bold"> 返回</Text>
                 </Button>
                 <View className="bg-red--cssa index-top-bg" style="padding: 0 0 64rpx 64rpx;text-align: left;height: 400rpx;line-height:800rpx">
                     <Text className="color-deepred--cssa" style="font-size: 1.5rem; font-weight: bold">关于我们</Text>
                 </View>
-                <View style="text-align:center; padding: 64rpx 32rpx 32rpx 32rpx">
+                <View style="text-align:center; padding: 64rpx 0;">
                     <Image src="https://idd.cssapsu.cn/images/部门小萨合集_w1000.png" mode="widthFix" />
                 </View>
-                <Markdown md={this.state.md} type='wemark' />
-                <InfoFooter></InfoFooter>
+                <Markdown md={this.state.md} type='wemark' scrollView={false} showFooter={true} />
             </View >
         )
     }
