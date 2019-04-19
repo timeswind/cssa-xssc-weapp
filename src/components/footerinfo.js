@@ -1,9 +1,15 @@
 import CSSA_LOGO_2019_red_w400 from "../images/CSSA_LOGO_2019_red_w400.png"
-import { Component } from '@tarojs/taro'
+import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text } from '@tarojs/components'
 import './footerinfo.css';
 
 export default class FooterInfo extends Component {
+    copyText = (event) => {
+        event.stopPropagation();
+        if ('text' in event.target.dataset) {
+            Taro.setClipboardData({ data: event.target.dataset.text })
+        }
+    }
     render() {
         return (
             <View>
@@ -15,6 +21,9 @@ export default class FooterInfo extends Component {
                         <Text style="color: #999">我们希望得到你的反馈！</Text>
                     </View>
                     <Button className="contact-btn" style="margin: 32rpx 16rpx" open-type='contact'>联系我们</Button>
+                    <View>
+                        <Text style="color: #999">（新生群信息在微信公众号内）</Text>
+                    </View>
                 </View>
                 <View style="margin: 32rpx;">
                     <View style="text-align: center;margin: 32rpx;">
@@ -28,11 +37,11 @@ export default class FooterInfo extends Component {
                     </View>
                     <View>
                         <Text className="foot-info-entry-key">微信公众号</Text>
-                        <Text className="foot-info-entry-value">留学在宾州州立CSSA</Text>
+                        <Text className="foot-info-entry-value" selectable={true} onClick={this.copyText.bind()} data-text="留学在宾州州立CSSA">留学在宾州州立CSSA</Text>
                     </View>
                     <View>
                         <Text className="foot-info-entry-key">Instagram</Text>
-                        <Text className="foot-info-entry-value">pennstatecssa</Text>
+                        <Text className="foot-info-entry-value" selectable={true} onClick={this.copyText.bind()} data-text="pennstatecssa">pennstatecssa</Text>
                     </View>
                 </View>
             </View>
