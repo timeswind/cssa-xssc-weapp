@@ -16,18 +16,6 @@ class IndexPage extends Component {
     year: new Date().getFullYear()
   }
 
-  componentWillMount() { }
-
-  componentWillReact() { }
-
-  componentDidMount() { }
-
-  componentWillUnmount() { }
-
-  componentDidShow() { }
-
-  componentDidHide() { }
-
   onShareAppMessage(res) {
     return {
       title: 'Penn State CSSA 新生手册',
@@ -59,15 +47,20 @@ class IndexPage extends Component {
         <View className="navigationcard_wrapper" style="margin: 16px">
           <View className="navigationcard freshman-wiki-bg" onClick={() => this.navigate('/pages/xssc')}>
             <Text className="index-card-title">新生手册{this.state.year}</Text>
-            <Text style="font-weight: bold; color: #a02727; font-size: 18px;margin-top:4px;display: block">CSSA学术部</Text>
+            <Text style="font-weight: bold; color: #a02727; font-size: 18px;margin-top:4px;display: block">解决你的所有疑惑</Text>
           </View>
         </View>
         <View className="navigationcard_wrapper" style="margin: 16px;margin-top:0;padding-top:0">
           <View className="navigationcard major-wiki-bg" onClick={() => this.navigate('/pages/major_wiki')}>
             <Text className="index-card-title">PSU专业百科</Text>
-            <Text style="font-weight: bold; color: #ffecb3; font-size: 18px;margin-top:4px;display: block">CSSA宣传部</Text>
+            <Text style="font-weight: bold; color: #ffecb3; font-size: 18px;margin-top:4px;display: block">和你想的一样吗</Text>
           </View>
         </View>
+        {/* <View className="navigationcard_wrapper" style="margin: 16px;margin-top:0;padding-top:0">
+          <View className="navigationcard" onClick={() => this.navigate('/pages/maps/school')}>
+            <Text className="index-card-title">校园地图</Text>
+          </View>
+        </View> */}
         <View style="text-align: right;margin-right: 32rpx;font-weight: bold">
 
           <View>

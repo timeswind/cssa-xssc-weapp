@@ -1,7 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { Provider } from '@tarojs/mobx'
 import Index from './pages/index/index'
-import counterStore from './store/counter';
 import globalStore from './store/global';
 
 import "taro-ui/dist/style/components/drawer.scss";
@@ -9,6 +8,7 @@ import "taro-ui/dist/style/components/list.scss";
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/search-bar.scss";
 import "taro-ui/dist/style/components/button.scss";
+import "taro-ui/dist/style/components/float-layout.scss";
 import './app.css';
 // import 'taro-ui/dist/style/index.scss'
 
@@ -19,7 +19,6 @@ if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5') {
 }
 
 const store = {
-  counterStore,
   globalStore
 }
 
@@ -27,32 +26,22 @@ class App extends Component {
 
   constructor() {
     super();
-    if (process.env.TARO_ENV === 'weapp') {
-      this.config = {
-        pages: [
-          'pages/index/index',
-          'pages/about',
-          'pages/xssc',
-          'pages/major_wiki',
-          'pages/yearbook/menu',
-          'pages/yearbook/reader'
-        ],
-        window: {
-          backgroundTextStyle: 'light',
-          backgroundColor: '#ee5050',
-          navigationBarTitleText: 'CSSA 新手手册',
-          navigationBarTextStyle: 'black',
-          "navigationStyle": "custom"
-        }
-      }
-    } else if (process.env.TARO_ENV === 'alipay') {
-      this.config = {
-        pages: [
-          'pages/index/index',
-          'pages/about',
-          'pages/xssc',
-          'pages/major_wiki'
-        ]
+    this.config = {
+      pages: [
+        'pages/index/index',
+        'pages/about',
+        'pages/xssc',
+        'pages/major_wiki',
+        'pages/yearbook/menu',
+        'pages/yearbook/reader',
+        // 'pages/maps/school'
+      ],
+      window: {
+        backgroundTextStyle: 'light',
+        backgroundColor: '#ee5050',
+        navigationBarTitleText: 'CSSA 新手手册',
+        navigationBarTextStyle: 'black',
+        navigationStyle: "custom"
       }
     }
   }

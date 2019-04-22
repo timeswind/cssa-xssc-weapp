@@ -28,13 +28,13 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 2,
+			"current": 0,
 			"list": [
 				{
 					"id": 0,
-					"name": "card",
+					"name": "xssc from chat",
 					"pathName": "pages/xssc",
-					"query": "pages/xssc?from=share&section=di-mei-zhi-hou/kai-xue-zhun-bei.md&toview=idXIANGGUANZHANGHAOBANLI",
+					"query": "?from=share&section=di-mei-zhi-hou/kai-xue-zhun-bei.md&toview=idXIANGGUANZHANGHAOBANLI",
 					"scene": 1008
 				},
 				{
@@ -50,6 +50,13 @@
 					"pathName": "pages/yearbook/reader",
 					"query": "?from=share&section=wen-yu-bu.md&version=2017-2018&toview=idSUNYIRAN",
 					"scene": 1008
+				},
+				{
+					"id": -1,
+					"name": "school map",
+					"pathName": "pages/maps/school",
+					"query": "",
+					"scene": null
 				}
 			]
 		}

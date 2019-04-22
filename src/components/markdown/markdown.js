@@ -2,8 +2,8 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import './markdown.css';
 import parser from './parser';
-import { observer, inject } from '@tarojs/mobx'
 import InfoFooter from '../footerinfo';
+import { observer, inject } from '@tarojs/mobx'
 
 @inject('globalStore')
 @observer
@@ -72,16 +72,13 @@ class Markdown extends Component {
     }
 
     quickNavClick(event) {
-        const { globalStore } = this.props
-        event.stopPropagation();
         if ('id' in event.target.dataset) {
-            globalStore.setToView(event.target.dataset.id)
+            this.props.updateToView(event.target.dataset.id)
         }
     }
 
     onScrollToUpper = () => {
-        const { globalStore } = this.props
-        globalStore.setToView("")
+        this.props.updateToView("")
     }
 
     render() {

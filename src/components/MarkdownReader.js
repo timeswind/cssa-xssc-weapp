@@ -1,9 +1,10 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text } from '@tarojs/components'
-import { observer, inject } from '@tarojs/mobx'
 import { AtDrawer } from 'taro-ui'
 import Markdown from './markdown/markdown';
 import ReaderSearchBar from './readerSearchBar';
+import BackButton from './backButton';
+import { observer, inject } from '@tarojs/mobx'
 
 @inject('globalStore')
 @observer
@@ -25,7 +26,6 @@ class MarkdownReader extends Component {
         this.imageServerEndpoint = props.config.apiPath
 
         this.version = props.config.version || props.params.version || false
-
         if (this.version && this.version !== 'undefined') {
             this.contentServerEndpoint = this.apiPath + this.version + '/'
             this.imageServerEndpoint = this.apiPath + this.version + '/'
@@ -64,14 +64,14 @@ class MarkdownReader extends Component {
     handleProps(props) {
         const { params, config } = props
         if ('version' in params && params.version !== 'undefined') {
-            console.log('version', params.version)
             this.version = params.version
             this.contentServerEndpoint = this.apiPath + params.version + '/'
             this.imageServerEndpoint = this.apiPath + params.version + '/'
         }
 
         if ('section' in params && params.section !== 'undefined') {
-            Taro.setStorageSync(config.localStoreSectionKey, params.section);
+            this.setCurrentSection(params.section)
+            // Taro.setStorageSync(config.localStoreSectionKey, params.section);
             this.fetchSection(params.section);
         } else {
             var targetSection = Taro.getStorageSync(config.localStoreSectionKey) || config.defaultSectionKey
@@ -148,13 +148,15 @@ class MarkdownReader extends Component {
         this.setState({ searchResults: [] })
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState) {
         const { params, globalStore } = this.props
         if ('toview' in params && !this.toviewlock) {
             globalStore.setToView(params.toview)
             this.toviewlock = true
         } else {
-            globalStore.setToView("top")
+            if (this.state.currentSectionIndex !== prevState.currentSectionIndex) {
+                globalStore.setToView("top")
+            }
         }
     }
 
@@ -171,12 +173,14 @@ class MarkdownReader extends Component {
 
     findSectionName(menuData, section) {
         var result = "";
-        menuData.forEach((data) => {
-            if (data.key == section) {
-                result = data.value;
-                return;
-            }
-        })
+        if (menuData.length > 0) {
+            menuData.forEach((data) => {
+                if (data.key == section) {
+                    result = data.value;
+                    return;
+                }
+            })
+        }
         return result
     }
 
@@ -187,18 +191,33 @@ class MarkdownReader extends Component {
             const menuData = this.menuData;
             globalStore.setToView("")
             this.fetchContent(section, function (data) {
-                const currentSectionName = self.findSectionName(menuData, section)
-                const currentSectionIndex = self.findSectionIndex(menuData, section)
-                globalStore.setCurrentSectionTitle(currentSectionName)
-                globalStore.setCurrentSection(section)
-                self.currentSection = section
-                self.setState({ md: data, currentSectionIndex: currentSectionIndex })
-                Taro.setStorageSync(self.localStoreSectionKey, section)
+                if (section !== self.currentSection) {
+                    Taro.pageScrollTo({
+                        scrollTop: 0,
+                        duration: 300
+                    });
+                }
+                self.setCurrentSection(section)
+                if (menuData.length > 0) {
+                    const currentSectionName = self.findSectionName(menuData, section)
+                    const currentSectionIndex = self.findSectionIndex(menuData, section)
+                    globalStore.setCurrentSectionTitle(currentSectionName)
+                    self.setState({ md: data, currentSectionIndex: currentSectionIndex })
+                } else {
+                    self.setState({ md: data })
+                }
             })
         } else {
             console.error('false section', section)
         }
 
+    }
+
+    setCurrentSection(section) {
+        const { globalStore, config } = this.props
+        this.currentSection = section
+        globalStore.setCurrentSection(section)
+        Taro.setStorageSync(config.localStoreSectionKey, section);
     }
 
     openMenuDrawer = () => {
@@ -208,7 +227,7 @@ class MarkdownReader extends Component {
         this.setState({ drawerShow: true })
     }
 
-    onMenuClose() {
+    onMenuClose = () => {
         this.setState({ drawerShow: false })
     }
 
@@ -237,8 +256,8 @@ class MarkdownReader extends Component {
     }
 
     fetchSectionByIndex(index) {
-        var section = this.menuData[index]["key"]
-        this.fetchSection(section)
+        var sectionKey = this.menuData[index]["key"]
+        this.fetchSection(sectionKey)
     }
 
 
@@ -252,6 +271,7 @@ class MarkdownReader extends Component {
     }
 
     fetchMenu(menuKey) {
+        const { globalStore, globalStore: { currentSectionTitle } } = this.props;
         var menuDataProcess = [];
         var menuNameListProcess = [];
         var self = this;
@@ -270,6 +290,15 @@ class MarkdownReader extends Component {
                 menuDataProcess.push(menu_item);
             });
             self.menuData = menuDataProcess;
+            if (currentSectionTitle === "" && self.currentSection !== "" && self.menuData.length > 0) {
+                var currentSectionTitleFind = self.findSectionName(self.menuData, self.currentSection)
+                globalStore.setCurrentSectionTitle(currentSectionTitleFind)
+            }
+
+            if (self.state.currentSectionIndex < 0 && self.currentSection !== "" && self.menuData.length > 0) {
+                var currentSectionIndexFind = self.findSectionIndex(self.menuData, self.currentSection)
+                self.setState({ currentSectionIndex: currentSectionIndexFind })
+            }
             self.setState({ menuNameListArray: menuNameListProcess })
         })
     }
@@ -288,34 +317,13 @@ class MarkdownReader extends Component {
     }
 
     fetchContent(key, callback) {
-        var self = this;
         var url = this.contentServerEndpoint + key;
         Taro.request({
             url: url,
             success: function (data) {
-                if (key !== self.currentSection) {
-                    Taro.pageScrollTo({
-                        scrollTop: 0,
-                        duration: 300
-                    });
-                }
                 callback(data.data)
             }
         });
-    }
-
-    backButtonOnClick() {
-        if (Taro.getCurrentPages().length >= 2) {
-            Taro.navigateBack()
-        } else {
-            this.redirectTo('/pages/index/index')
-        }
-    }
-
-    redirectTo = (path) => {
-        Taro.redirectTo({
-            url: path
-        })
     }
 
     innerLinkClick(innerlink) {
@@ -330,12 +338,16 @@ class MarkdownReader extends Component {
         this.setState({ searchResults: [] })
     }
 
+    updateToView(toView) {
+        const { globalStore } = this.props
+        globalStore.setToView(toView)
+    }
+
     render() {
         const { globalStore: { deviceModel, statusBarHeight }, showSearchBar, showFooter } = this.props
         const { md, drawerShow, searchResults, menuNameListArray, currentSectionIndex } = this.state;
         const bottomBarStyleIphoneX = { width: "100%", position: "fixed", bottom: "0", paddingBottom: "34PX", height: "44PX", background: "#EE5050", display: "flex", flexDirection: "row" }
         const bottomBarStyleNormal = { width: "100%", position: "fixed", bottom: "0px", height: "44PX", background: "#EE5050", display: "flex", flexDirection: "row" }
-        const routerPageCount = Taro.getCurrentPages().length;
 
         return (
             <View className='markdown-reader' style={"padding-top:" + (statusBarHeight + 38) + "px"}>
@@ -346,9 +358,7 @@ class MarkdownReader extends Component {
                         searchOnActionClick={valueToSearch => this.searchOnActionClick(valueToSearch)}
                         clearSearchResult={() => this.clearSearchResult()}></ReaderSearchBar>
                 )}
-                <Button class="xssc-home-button" onClick={() => this.backButtonOnClick()} style={"top:" + (statusBarHeight + 8) + "px"}>
-                    <Text class="at-icon at-icon-home" style="font-size:16px;color:#fff;font-weight: bold">{routerPageCount >= 2 ? '返回' : '首页'}</Text>
-                </Button>
+                <BackButton></BackButton>
                 <Button class="xssc-share-button" open-type="share" style={deviceModel == "iPhone X" ? { bottom: "92PX" } : { bottom: "52PX" }}>
                     <Text class="at-icon at-icon-share" style="font-size:18px;color:#fff;font-weight: bold">分享</Text>
                 </Button>
@@ -358,7 +368,7 @@ class MarkdownReader extends Component {
                     mask
                     onClose={this.onMenuClose.bind(this)}
                     width={"90%"}
-                    onItemClick={(index) => { this.menuClick(index) }}
+                    onItemClick={this.menuClick.bind(this)}
                     items={menuNameListArray}
                 ></AtDrawer>
                 <Markdown
@@ -370,6 +380,7 @@ class MarkdownReader extends Component {
                     imageServerEndpoint={this.imageServerEndpoint}
                     innerLinkClick={innerlink => this.innerLinkClick(innerlink)}
                     quickNav={true}
+                    updateToView={toView => { this.updateToView(toView) }}
                     showFooter={showFooter}
                     topOffset={showSearchBar ? (statusBarHeight + 50 + 38) : (statusBarHeight + 38)}
                 >

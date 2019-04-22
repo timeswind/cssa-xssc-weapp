@@ -1,10 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import Markdown from '../components/markdown/markdown';
-import { observer, inject } from '@tarojs/mobx'
+import BackButton from '../components/backButton';
 
-@inject('globalStore')
-@observer
 class About extends Component {
     static options = {
         addGlobalClass: true
@@ -40,13 +38,9 @@ class About extends Component {
     componentDidHide() { }
 
     render() {
-        const { globalStore: { statusBarHeight } } = this.props
-
         return (
             <View style="padding-bottom: 80px">
-                <Button class="back-botton" onClick={() => Taro.navigateBack()} style={"top:" + (statusBarHeight + 8) + "px"}>
-                    <Text class="at-icon at-icon-chevron-left" style="font-size:34rpx;color:#fff;font-weight: bold"> 返回</Text>
-                </Button>
+                <BackButton />
                 <View className="bg-red--cssa main-top-bg" style="padding: 0 0 64rpx 64rpx;text-align: left;height: 400rpx;line-height:800rpx">
                     <Text className="color-deepred--cssa" style="font-size: 1.8rem; font-weight: bold">关于我们</Text>
                 </View>

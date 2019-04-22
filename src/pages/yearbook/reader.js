@@ -49,7 +49,9 @@ class yearbookReader extends Component {
     render() {
         const { params } = this.state
         return (
-            <MarkdownReader config={this.readerConfig} params={params}></MarkdownReader>
+            <View>
+                {Object.keys(params).length > 0 && (<MarkdownReader config={this.readerConfig} params={params}></MarkdownReader>)}
+            </View>
         )
     }
 }
