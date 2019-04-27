@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Button, ScrollView } from '@tarojs/components'
+import { View, Text, Button } from '@tarojs/components'
 import './index.css'
 import CSSA_LOGO_2019_white_w400 from "../../images/CSSA_LOGO_2019_white_w400.png"
 import { observer, inject } from '@tarojs/mobx'
@@ -53,16 +53,16 @@ class IndexPage extends Component {
         <View className="navigationcard_wrapper" style="margin: 16px;margin-top:0;padding-top:0">
           <View className="navigationcard major-wiki-bg" onClick={() => this.navigate('/pages/major_wiki')}>
             <Text className="index-card-title">PSU专业百科</Text>
-            <Text style="font-weight: bold; color: #ffecb3; font-size: 18px;margin-top:4px;display: block">和你想的一样吗</Text>
+            <Text style="font-weight: bold; color: #ff6f00; font-size: 18px;margin-top:4px;display: block">和你想的一样吗</Text>
           </View>
         </View>
-        {/* <View className="navigationcard_wrapper" style="margin: 16px;margin-top:0;padding-top:0">
-          <View className="navigationcard" onClick={() => this.navigate('/pages/maps/school')}>
+        <View className="navigationcard_wrapper" style="margin: 16px;margin-top:0;padding-top:0">
+          <View className="navigationcard school-map-bg" onClick={() => this.navigate('/pages/maps/school')}>
             <Text className="index-card-title">校园地图</Text>
+            <Text style="font-weight: bold; color: #0d47a1; font-size: 18px;margin-top:4px;display: block">好多楼啊</Text>
           </View>
-        </View> */}
+        </View>
         <View style="text-align: right;margin-right: 32rpx;font-weight: bold">
-
           <View>
             <Text style="color: #999">
               信息错误？信息不全？
@@ -76,9 +76,15 @@ class IndexPage extends Component {
           <Button class='contact-btn' style="margin-top: 32rpx;margin-right: 16rpx" open-type='contact'>联系我们</Button>
 
         </View>
+        <View style="text-align:left;float:left;margin-top:-200rpx">
+          <Image src="https://idd.cssapsu.cn/images/little_sa_with_pig_smile_avatar_h200.png"
+            style="width:180rpx;display:inline_block"
+            mode="widthFix" />
+        </View>
+
         <View onClick={() => this.navigate('/pages/yearbook/menu')} className="cssa_yearbook_menu_button">
-          CSSA历年年鉴
-          </View>
+          <Text>CSSA历年年鉴</Text>
+        </View>
       </View>
     )
   }

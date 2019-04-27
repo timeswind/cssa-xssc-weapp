@@ -13,6 +13,16 @@
     background-image: url("https://idd.cssapsu.cn/images/freshman_wiki_bg.png");
 }
 
+.school-map-bg {
+    background: #2196f3;
+}
+
+/* .little-sa-avatar-1 {
+    background-image: url("https://idd.cssapsu.cn/images/%E5%B0%8Fsa%E5%A4%B4%E5%83%8F3.gif");
+    background-repeat: no-repeat;
+    background-size: 25%;
+} */
+
 .major-wiki-bg, .freshman-wiki-bg {
     background-size: 25%;
     background-repeat: no-repeat;
@@ -33,6 +43,7 @@
 }
 
 .cssa_yearbook_menu_button {
+    clear:both;
     padding: 16px 0;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;

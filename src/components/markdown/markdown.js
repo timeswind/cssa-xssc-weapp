@@ -60,13 +60,6 @@ class Markdown extends Component {
     linkClick(event) {
         event.stopPropagation();
         if ('link' in event.target.dataset) {
-            Taro.setClipboardData({ data: event.target.dataset.link })
-        }
-    }
-
-    innerLinkClick(event) {
-        event.stopPropagation();
-        if ('link' in event.target.dataset) {
             this.props.innerLinkClick(event.target.dataset.link)
         }
     }
@@ -86,6 +79,7 @@ class Markdown extends Component {
         var { type, quickNav, showFooter, scrollView, topOffset, bottomOffset } = this.props;
         var { parsedData, quickNavData } = this.state;
         var scrollViewHeight = windowHeight - topOffset - bottomOffset
+        // console.log(parsedData)
         const content = (
             <View className="wemark_wrapper" id="top">
                 {(quickNav && quickNavData.length !== 0) && (
@@ -107,7 +101,7 @@ class Markdown extends Component {
                                         {(renderInline.type === 'text' || renderInline.type === 'code' || renderInline.type === 'strong' || renderInline.type === 'deleted' || renderInline.type === 'em' || renderInline.type === 'table_th' || renderInline.type === 'table_td')
                                             && (<View style="display: inline">
                                                 {renderInline.data.href ? (
-                                                    <Text className={'wemark_inline_' + renderInline.type + ' wemark_inline_link'} selectable="true" data-link={renderInline.data.href} onClick={this.innerLinkClick.bind()}>{renderInline.content}</Text>
+                                                    <Text className={'wemark_inline_' + renderInline.type + ' wemark_inline_link'} selectable="true" data-link={renderInline.data.href} onClick={this.linkClick.bind()}>{renderInline.content}</Text>
                                                 ) : (
                                                         <Text className={'wemark_inline_' + renderInline.type} selectable="true">{renderInline.content}</Text>
                                                     )}
@@ -117,7 +111,7 @@ class Markdown extends Component {
                                         {(!renderInline.type)
                                             && (<Text className="wemark_inline_code_text" selectable="true">{renderInline}</Text>)}
                                         {(renderInline.type === 'link')
-                                            && (<Text className="wemark_inline_link" selectable="true" data-link={renderInline.content} onClick={this.linkClick.bind()}>{renderInline.content}</Text>)}
+                                            && (<Text className="wemark_inline_link" selectable="true" data-link={renderInline.data.href} onClick={this.linkClick.bind()}>{renderInline.content}</Text>)}
                                         {(renderInline.type === 'image')
                                             && (<View className="wemark_inline_image_wrapper">
                                                 <Image mode="widthFix" className="wemark_inline_image" src={renderInline.src} lazy-load="true" data-src={renderInline.src} onClick={this.imageClick.bind()}></Image>

@@ -34,7 +34,7 @@ class App extends Component {
         'pages/major_wiki',
         'pages/yearbook/menu',
         'pages/yearbook/reader',
-        // 'pages/maps/school'
+        'pages/maps/school'
       ],
       window: {
         backgroundTextStyle: 'light',

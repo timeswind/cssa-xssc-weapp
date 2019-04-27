@@ -13,7 +13,8 @@ class MyMap extends Component {
                 style={fullScreen ? { height: '100vh', width: '100%' } : {}}
                 longitude={longitude}
                 latitude={latitude}
-                scale={scale}>
+                scale={scale}
+                subkey="IOGBZ-G62CX-IBS4Q-ZMOE6-BOFK3-43B7B">
                 {showBackBotton && this.props.children}
             </Map>
         )

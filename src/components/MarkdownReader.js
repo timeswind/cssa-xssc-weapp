@@ -327,10 +327,29 @@ class MarkdownReader extends Component {
     }
 
     innerLinkClick(innerlink) {
-        var innerlinkregex = new RegExp(/^../g)
-        if (innerlinkregex.test(innerlink)) {
-            var sectionKey = innerlink.match(/..\/(.*)/)[1];
-            this.fetchSection(sectionKey)
+        // console.log(innerlink);
+        var urlExpression = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
+        var regex = new RegExp(urlExpression);
+        if (innerlink.match(regex)) {
+            // console.log('is url, copy to clipboard')
+            Taro.setClipboardData({ data: innerlink })
+        } else {
+            // console.log('not url')
+            var innerlinkregex = new RegExp(/^\.\./gi)
+            if (innerlinkregex.test(innerlink)) {
+                // console.log('is inner link')
+                var sectionKey = innerlink.match(/..\/(.*)/)[1];
+                this.fetchSection(sectionKey)
+            } else {
+                var innerlinkregex2 = new RegExp(/.*\.md$/gi)
+                if (innerlinkregex2.test(innerlink)) {
+                    // console.log('is inner link, pass test2')
+                    this.fetchSection(innerlink)
+                } else {
+                    // console.log('not inner link, copy to clipboard')
+                    Taro.setClipboardData({ data: innerlink })
+                }
+            }
         }
     }
 
