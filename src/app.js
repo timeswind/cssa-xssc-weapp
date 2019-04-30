@@ -9,6 +9,8 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/search-bar.scss";
 import "taro-ui/dist/style/components/button.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
+import "taro-ui/dist/style/components/accordion.scss";
+
 import './app.css';
 // import 'taro-ui/dist/style/index.scss'
 
@@ -35,6 +37,7 @@ class App extends Component {
         'pages/yearbook/menu',
         'pages/yearbook/reader',
         // 'pages/maps/school',
+        'pages/maps/bus',
         'pages/sitemaps/index',
         'pages/sitemaps/freshman_wiki',
         'pages/sitemaps/major_wiki'

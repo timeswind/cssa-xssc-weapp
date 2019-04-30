@@ -13,8 +13,9 @@
     background-image: url("https://idd.cssapsu.cn/images/freshman_wiki_bg.png");
 }
 
-.school-map-bg {
+.catabus-map-bg {
     background: #2196f3;
+    background-image: url("https://idd.cssapsu.cn/images/catabus_bg.png");
 }
 
 /* .little-sa-avatar-1 {
@@ -23,7 +24,7 @@
     background-size: 25%;
 } */
 
-.major-wiki-bg, .freshman-wiki-bg {
+.major-wiki-bg, .freshman-wiki-bg, .catabus-map-bg {
     background-size: 25%;
     background-repeat: no-repeat;
     background-position: 95%;

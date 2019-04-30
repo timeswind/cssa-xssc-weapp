@@ -17,9 +17,7 @@ class SchoolMap extends Component {
     }
 
     componentDidMount() {
-        fetchContent("https://idd.cssapsu.cn/books/yearbook/README.md", (result)=> {
-            console.log(result)
-        })
+
     }
 
     backButtonOnClick() {
@@ -29,6 +27,7 @@ class SchoolMap extends Component {
             Taro.redirectTo({ url: '/pages/index/index' })
         }
     }
+    
     render() {
         const { globalStore: { statusBarHeight } } = this.props;
         const routerPageCount = Taro.getCurrentPages().length;

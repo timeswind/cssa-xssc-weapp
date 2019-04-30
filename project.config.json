@@ -34,7 +34,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 4,
 			"list": [
 				{
 					"id": 0,
@@ -61,6 +61,13 @@
 					"id": -1,
 					"name": "school map",
 					"pathName": "pages/maps/school",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "catabus",
+					"pathName": "pages/maps/bus",
 					"query": "",
 					"scene": null
 				}

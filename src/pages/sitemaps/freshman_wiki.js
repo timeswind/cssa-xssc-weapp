@@ -52,7 +52,6 @@ class FreshmanWiki extends Component {
 
     render() {
         const { menuData } = this.state;
-        console.log(menuData)
         return (
             <View>
                 <BackButton></BackButton>

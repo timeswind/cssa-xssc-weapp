@@ -25,17 +25,12 @@ class About extends Component {
         `
     }
 
-    componentWillMount() { }
-
-    componentWillReact() { }
-
-    componentDidMount() { }
-
-    componentWillUnmount() { }
-
-    componentDidShow() { }
-
-    componentDidHide() { }
+    onShareAppMessage(res) {
+        return {
+            title: 'Penn State CSSA 关于我们',
+            path: 'pages/about?from=share'
+        };
+    }
 
     render() {
         return (

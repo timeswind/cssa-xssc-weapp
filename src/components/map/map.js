@@ -6,11 +6,21 @@ class MyMap extends Component {
         addGlobalClass: true
     }
 
+    markerOnTap(event) {
+        if (this.props.onMarkerTap !== null) {
+            this.props.onMarkerTap(event)
+        }
+    }
+
     render() {
-        const { fullScreen, longitude, latitude, scale, showBackBotton } = this.props;
+        const { fullScreen, longitude, latitude, scale, showBackBotton, height, markers, polyline } = this.props;
         return (
-            <Map onClick={this.onTap}
-                style={fullScreen ? { height: '100vh', width: '100%' } : {}}
+            <Map
+                onMarkerTap={this.markerOnTap}
+                markers={markers}
+                polyline={polyline}
+                onClick={this.onTap}
+                style={fullScreen ? { height: '100vh', width: '100%' } : { height: height, width: '100%' }}
                 longitude={longitude}
                 latitude={latitude}
                 scale={scale}
@@ -23,10 +33,14 @@ class MyMap extends Component {
 
 MyMap.defaultProps = {
     fullScreen: true,
+    height: "100vh",
     longitude: '-77.859730',
     latitude: '40.803300',
     scale: 15,
-    showBackBotton: false
+    showBackBotton: false,
+    markers: [],
+    polyline: [],
+    onMarkerTap: null
 }
 
 export default MyMap;

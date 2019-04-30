@@ -94,6 +94,20 @@ page {
     z-index: 99;
 }
 
+.coverview-home-button, .coverview-back-botton {
+    height: 64rpx;
+    background: #1b1b1b;
+    color: #fff;
+    text-align: center;
+    line-height: 64rpx;
+    padding: 0 32rpx;
+    display: inline-block;
+    border-radius: 10rpx;
+    position: fixed;
+    left: 32rpx;
+    z-index: 99;
+}
+
 .contact-btn {
     height: 80rpx;
     background: #1b1b1b;
