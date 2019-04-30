@@ -3,12 +3,16 @@
 	"projectname": "cssa-student-manual-2019",
 	"description": "Penn State CSSA 新生手册",
 	"appid": "wx33eac0afa5ac5f5d",
+	"checkSiteMap": true,
 	"setting": {
 		"urlCheck": true,
 		"es6": false,
 		"postcss": false,
 		"minified": false,
-		"newFeature": true
+		"newFeature": true,
+		"autoAudits": false,
+		"checkInvalidKey": true,
+		"uglifyFileName": false
 	},
 	"compileType": "miniprogram",
 	"simulatorType": "wechat",

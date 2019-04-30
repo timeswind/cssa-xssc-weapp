@@ -50,7 +50,7 @@ class yearbookReader extends Component {
         const { params } = this.state
         return (
             <View>
-                {Object.keys(params).length > 0 && (<MarkdownReader config={this.readerConfig} params={params}></MarkdownReader>)}
+                {Object.keys(params).length > 0 && (<MarkdownReader config={this.readerConfig} params={params} memoryLastRead={false}></MarkdownReader>)}
             </View>
         )
     }

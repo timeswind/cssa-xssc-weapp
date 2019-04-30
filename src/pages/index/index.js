@@ -56,12 +56,12 @@ class IndexPage extends Component {
             <Text style="font-weight: bold; color: #ff6f00; font-size: 18px;margin-top:4px;display: block">和你想的一样吗</Text>
           </View>
         </View>
-        <View className="navigationcard_wrapper" style="margin: 16px;margin-top:0;padding-top:0">
+        {/* <View className="navigationcard_wrapper" style="margin: 16px;margin-top:0;padding-top:0">
           <View className="navigationcard school-map-bg" onClick={() => this.navigate('/pages/maps/school')}>
             <Text className="index-card-title">校园地图</Text>
             <Text style="font-weight: bold; color: #0d47a1; font-size: 18px;margin-top:4px;display: block">好多楼啊</Text>
           </View>
-        </View>
+        </View> */}
         <View style="text-align: right;margin-right: 32rpx;font-weight: bold">
           <View>
             <Text style="color: #999">
@@ -82,9 +82,14 @@ class IndexPage extends Component {
             mode="widthFix" />
         </View>
 
+        <View onClick={() => this.navigate('/pages/sitemaps/index')} className="cssa_yearbook_menu_button">
+          <Text>索引 Indexes</Text>
+        </View>
+
         <View onClick={() => this.navigate('/pages/yearbook/menu')} className="cssa_yearbook_menu_button">
           <Text>CSSA历年年鉴</Text>
         </View>
+
       </View>
     )
   }

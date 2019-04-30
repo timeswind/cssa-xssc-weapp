@@ -27,9 +27,10 @@ const config = {
   defineConstants: {
   },
   copy: {
-    patterns: [],
-    options: {
-    }
+    patterns: [
+      { from: 'src/sitemap.json', to: 'dist/sitemap.json'}
+    ],
+    options: {}
   },
   weapp: {
     compile: {

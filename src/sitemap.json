@@ -2,11 +2,35 @@
   "rules": [
     {
       "action": "allow",
+      "page": "pages/sitemaps/index"
+    },
+    {
+      "action": "allow",
+      "page": "pages/sitemaps/freshman_wiki"
+    },
+    {
+      "action": "allow",
+      "page": "pages/sitemaps/major_wiki"
+    },
+    {
+      "action": "allow",
+      "page": "pages/index/index"
+    },
+    {
+      "action": "allow",
+      "page": "pages/yearbook/menu"
+    },
+    {
+      "action": "allow",
+      "page": "pages/about"
+    },
+    {
+      "action": "allow",
       "page": "pages/xssc",
       "params": [
         "section"
       ],
-      "matching": "inclusive"
+      "matching": "partial"
     },
     {
       "action": "allow",
@@ -14,7 +38,7 @@
       "params": [
         "section"
       ],
-      "matching": "inclusive"
+      "matching": "partial"
     },
     {
       "action": "allow",
@@ -23,14 +47,10 @@
         "version",
         "section"
       ],
-      "matching": "inclusive"
+      "matching": "partial"
     },
     {
-      "action": "allow",
-      "page": "pages/about"
-    },
-    {
-      "action": "allow",
+      "action": "disallow",
       "page": "*"
     }
   ]

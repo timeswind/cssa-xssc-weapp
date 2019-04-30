@@ -9,6 +9,9 @@ const fetchContent = function (url, callback) {
     });
 }
 
+const defaultServerEndpoint = "https://idd.cssapsu.cn/"
+
 module.exports = {
-    fetchContent
+    fetchContent,
+    defaultServerEndpoint
 }

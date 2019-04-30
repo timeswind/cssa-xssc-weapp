@@ -36,7 +36,6 @@ class MarkdownReader extends Component {
         this.pageDicKey = props.config.pageDicKey
 
 
-
         this.shareName = props.config.shareName
         this.pathPrefix = props.config.pathPrefix
         this.defaultSectionKey = props.config.defaultSectionKey
@@ -46,7 +45,11 @@ class MarkdownReader extends Component {
         this.menuData = [];
         this.toviewlock = false;
 
-        this.currentSection = Taro.getStorageSync(this.localStoreSectionKey) || this.defaultSectionKey
+        if (props.memoryLastRead) {
+            this.currentSection = Taro.getStorageSync(this.localStoreSectionKey) || this.defaultSectionKey
+        } else {
+            this.currentSection = this.defaultSectionKey
+        }
 
         this.state = {
             md: '# 加载中...',
@@ -74,7 +77,12 @@ class MarkdownReader extends Component {
             // Taro.setStorageSync(config.localStoreSectionKey, params.section);
             this.fetchSection(params.section);
         } else {
-            var targetSection = Taro.getStorageSync(config.localStoreSectionKey) || config.defaultSectionKey
+            var targetSection;
+            if (props.memoryLastRead) {
+                targetSection = Taro.getStorageSync(config.localStoreSectionKey) || config.defaultSectionKey
+            } else {
+                targetSection = config.defaultSectionKey
+            }
             if (targetSection && targetSection !== 'undefined') {
                 this.fetchSection(targetSection)
             }
@@ -435,7 +443,8 @@ MarkdownReader.defaultProps = {
     },
     params: {},
     showSearchBar: false,
-    showFooter: false
+    showFooter: false,
+    memoryLastRead: true
 };
 
 export default MarkdownReader 

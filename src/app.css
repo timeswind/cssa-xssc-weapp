@@ -63,6 +63,12 @@ page {
     text-shadow: 1px 1px 1px #333;
 }
 
+.index_card .title {
+    color: #ee5050;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
 .xssc-share-button {
     height: 36PX;
     background: #1b1b1b;
