@@ -17,11 +17,23 @@ class CataBusMap extends Component {
     constructor(props) {
         super(props);
         this.routeThemeColor = "#000000";
+        this.localStoreRouteIdKey = "__maps_catabus_routeid";
+
+        this.didShowState = true
+
         this.stopIds = [];
-        this.currentRouteID = -1;
+        this.currentRouteID = Taro.getStorageSync(this.localStoreRouteIdKey) || -1;
         this.routeIdDic = {};
 
+        this.VehicleRealtimeTimer = null;
+
+        this.vehicleMarkers = []
+        this.stopMarkers = []
+
         this.state = {
+            longitude: '-77.859730',
+            latitude: '40.803300',
+            scale: 13,
             visiableRoutes: [],
             markers: [],
             polylineData: [],
@@ -38,7 +50,42 @@ class CataBusMap extends Component {
     }
 
     componentDidMount() {
+        let RouteId = this.currentRouteID;
         this.getVisibleRoute();
+        this.getRouteDetail(RouteId);
+        this.startVehicleRealtimeTimer();
+    }
+
+    componentDidShow() {
+        if (this.didShowState) {
+            this.didShowState = false;
+        } else {
+            this.updateVehicleRealtime();
+        }
+    }
+
+    componentWillUnmount() {
+        this.stopVehicleRealtimeTimer();
+    }
+
+    startVehicleRealtimeTimer() {
+        if (this.VehicleRealtimeTimer) {
+            return false;
+        }
+        let speed = 30000; //30秒刷新一次
+        let _this = this
+        this.VehicleRealtimeTimer = setInterval(function () {
+            _this.updateVehicleRealtime()
+        }, speed)
+    }
+
+    stopVehicleRealtimeTimer() {
+        clearInterval(this.VehicleRealtimeTimer);
+    }
+
+    updateVehicleRealtime() {
+        let RouteId = this.currentRouteID;
+        this.getActiveVehiclesLocationForRoute(RouteId)
     }
 
     getVisibleRoute() {
@@ -56,38 +103,29 @@ class CataBusMap extends Component {
     }
 
     getRouteDetail(RouteId) {
-        let timestamp = '' + new Date().getTime();
-        let url = catabusApi.RouteDetailsEndPoint.replace('{timestamp}', timestamp)
-        url = url.replace('{routeID}', RouteId)
-        let self = this;
-        fetchContent(url, function (data) {
-            let stopids = []
-            // console.log(data)
-            if ('Color' in data) {
-                self.routeThemeColor = '#' + data.Color;
-            }
-            if ('RouteTraceFilename' in data) {
-                self.getTraceFile(data.RouteTraceFilename)
-            }
-            if ('Stops' in data) {
-                let markers = data.Stops.map(function (stop) {
-                    stopids.push(stop.StopId)
-                    var markerData = {
-                        iconPath: '/images/icons8-marker-40.png',
-                        id: stop.StopId,
-                        latitude: stop.Latitude,
-                        longitude: stop.Longitude,
-                        title: stop.Name,
-                        width: 20,
-                        height: 20
+        if (RouteId !== -1) {
+            let timestamp = '' + new Date().getTime();
+            let url = catabusApi.RouteDetailsEndPoint.replace('{timestamp}', timestamp)
+            url = url.replace('{routeID}', RouteId)
+            let self = this;
+            fetchContent(url, function (data) {
+                if ('Color' in data) {
+                    self.routeThemeColor = '#' + data.Color;
+                }
+                if ('RouteTraceFilename' in data) {
+                    self.getTraceFile(data.RouteTraceFilename)
+                }
+                if ('Stops' in data) {
+                    var stopMarkers = self.formStopMarkers(data.Stops)
+                    var markers = stopMarkers;
+                    if ('Vehicles' in data) {
+                        let vehicleMarkers = self.formVehicleMarkers(data.Vehicles)
+                        markers = vehicleMarkers.concat(stopMarkers)
                     }
-                    return markerData;
-                })
-                self.setState({ markers: markers })
-            }
-            self.getActiveVehiclesLocationForRoute(RouteId)
-            self.stopIds = stopids;
-        })
+                    self.setState({ markers: markers })
+                }
+            })
+        }
     }
 
     getTraceFile(filename) {
@@ -99,12 +137,16 @@ class CataBusMap extends Component {
             if (polylinesRaw) {
                 let polylines = polylinesRaw.map(function (line) {
                     let rawCoordinates = line.LineString.coordinates
+
                     let rawCoordinatesSplit = rawCoordinates.split(',0 ')
                     let points = rawCoordinatesSplit.map(function (rawArray) {
                         let splitArray = rawArray.split(',');
+                        let longStr = splitArray[0];
+                        let latStr = splitArray[1];
+
                         return {
-                            longitude: splitArray[0],
-                            latitude: splitArray[1]
+                            longitude: longStr,
+                            latitude: latStr
                         }
                     })
 
@@ -122,51 +164,105 @@ class CataBusMap extends Component {
     }
 
     getActiveVehiclesLocationForRoute(RouteId) {
-        let timestamp = '' + new Date().getTime();
-        let url = catabusApi.GetAllVehiclesForRouteEndPoint.replace('{timestamp}', timestamp)
-        url = url.replace('{routeID}', RouteId)
-        let self = this;
+        if (RouteId !== -1) {
+            let timestamp = '' + new Date().getTime();
+            let url = catabusApi.GetAllVehiclesForRouteEndPoint.replace('{timestamp}', timestamp)
+            url = url.replace('{routeID}', RouteId)
+            let self = this;
 
-        fetchContent(url, function (data) {
-            let markers = data.map(function (bus) {
-                var markerData = {
-                    iconPath: '/images/icons8-bus-48.png',
-                    id: bus.VehicleId,
-                    latitude: bus.Latitude,
-                    longitude: bus.Longitude,
-                    title: bus.Destination,
-                    width: 48,
-                    height: 48,
-                    anchor: { x: 0.5, y: 0.5 },
-                    // label: {
-                    //     content: "车内人数：" + bus.OnBoard,
-                    //     bgColor: "#ee5050",
-                    //     color: "#ffffff",
-                    //     padding: 4,
-                    //     borderRadius: 8
-                    // },
-                    callout: {
-                        content: bus.Destination + "\n" + "车内人数：" + bus.OnBoard,
-                        bgColor: "#ee5050",
-                        color: "#ffffff",
-                        borderColor: "#a02727",
-                        borderWidth: 4,
-                        padding: 8,
-                        borderRadius: 8
-                    }
-                }
-                return markerData;
+            fetchContent(url, function (data) {
+                self.displayVehicles(data)
             })
+        }
+    }
 
-            var oldMarkers = self.state.markers;
-            var newMarkers = oldMarkers.concat(markers)
-            self.setState({ markers: newMarkers })
+    formStopMarkers(stops) {
+        var longitudeSum = 0.0;
+        var latitudeSum = 0.0;
+        var totalCoordinateCount = 0;
 
+        var stopids = []
+        let stopMarkers = stops.map(function (stop) {
+            stopids.push(stop.StopId)
+            let latStr = stop.Latitude;
+            let longStr = stop.Longitude;
+            latitudeSum += parseFloat(latStr);
+            longitudeSum += parseFloat(longStr);
+            totalCoordinateCount++
+
+            var markerData = {
+                iconPath: '/images/icons8-marker-40.png',
+                id: stop.StopId,
+                latitude: latStr,
+                longitude: longStr,
+                title: stop.Name,
+                width: 20,
+                height: 20,
+                callout: {
+                    content: "站点名称\n" + stop.Name,
+                    bgColor: "#ee5050",
+                    color: "#ffffff",
+                    borderColor: "#a02727",
+                    borderWidth: 4,
+                    padding: 8,
+                    borderRadius: 8
+                }
+            }
+            return markerData;
         })
+
+        let centerLongitude = longitudeSum / totalCoordinateCount;
+        let centerLatitude = latitudeSum / totalCoordinateCount;
+        this.setState({ longitude: centerLongitude, latitude: centerLatitude })
+        this.stopIds = stopids;
+        this.stopMarkers = stopMarkers;
+        return stopMarkers;
+    }
+
+    formVehicleMarkers(vehicles) {
+        let vehicleMarkers = vehicles.map(function (bus) {
+            var markerData = {
+                iconPath: '/images/icons8-bus-48.png',
+                id: bus.VehicleId,
+                latitude: bus.Latitude,
+                longitude: bus.Longitude,
+                title: bus.Destination,
+                width: 48,
+                height: 48,
+                anchor: { x: 0.5, y: 0.5 },
+                // label: {
+                //     content: "车内人数：" + bus.OnBoard,
+                //     bgColor: "#ee5050",
+                //     color: "#ffffff",
+                //     padding: 4,
+                //     borderRadius: 8
+                // },
+                callout: {
+                    content: bus.Destination + "\n" + "车内人数：" + bus.OnBoard,
+                    bgColor: "#ee5050",
+                    color: "#ffffff",
+                    borderColor: "#a02727",
+                    borderWidth: 4,
+                    padding: 8,
+                    borderRadius: 8
+                }
+            }
+            return markerData;
+        })
+        this.vehicleMarkers = vehicleMarkers
+        return vehicleMarkers
+    }
+
+    displayVehicles(vehicles) {
+        let vehicleMarkers = this.formVehicleMarkers(vehicles)
+        let stopMarkers = this.stopMarkers;
+        var markers = vehicleMarkers.concat(stopMarkers);
+        this.setState({ markers: markers })
     }
 
     routeOnClick(RouteId) {
         this.currentRouteID = RouteId;
+        Taro.setStorageSync(this.localStoreRouteIdKey, RouteId);
         this.getRouteDetail(RouteId);
     }
 
@@ -227,12 +323,15 @@ class CataBusMap extends Component {
 
     render() {
         const { globalStore: { windowHeight, statusBarHeight } } = this.props
-        const { visiableRoutes, markers, polylineData, showTimeTable, timetableData } = this.state;
+        const { longitude, latitude, scale, visiableRoutes, markers, polylineData, showTimeTable, timetableData } = this.state;
         const routerPageCount = Taro.getCurrentPages().length;
-        console.log(timetableData.otherRouteStopDeparture)
+
         return (
             <View>
                 <MyMap
+                    longitude={longitude}
+                    latitude={latitude}
+                    scale={scale}
                     markers={markers}
                     polyline={polylineData}
                     showBackBotton={true}

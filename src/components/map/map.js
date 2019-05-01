@@ -12,10 +12,16 @@ class MyMap extends Component {
         }
     }
 
+    onTap(event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     render() {
         const { fullScreen, longitude, latitude, scale, showBackBotton, height, markers, polyline } = this.props;
         return (
             <Map
+                onTap={this.onTap}
                 onMarkerTap={this.markerOnTap}
                 markers={markers}
                 polyline={polyline}
