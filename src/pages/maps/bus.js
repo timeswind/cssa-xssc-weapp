@@ -7,6 +7,7 @@ import { observer, inject } from '@tarojs/mobx'
 import '../../images/icons8-marker-40.png';
 import '../../images/icons8-bus-48.png';
 import xmlparser from 'fast-xml-parser'
+import InfoFooter from '../../components/footerinfo';
 
 @inject('globalStore')
 @observer
@@ -38,7 +39,8 @@ class CataBusMap extends Component {
             markers: [],
             polylineData: [],
             showTimeTable: false,
-            timetableData: {}
+            timetableData: {},
+            toview_rid: ""
         }
     }
 
@@ -98,7 +100,15 @@ class CataBusMap extends Component {
                 dic[routeItem.RouteId] = routeItem
             })
             self.routeIdDic = dic;
-            self.setState({ visiableRoutes: data })
+            let visiableRoutes = data.map(function (route) {
+                if (route.LongName.indexOf(" - ") > 0) {
+                    route.LongName = route.LongName.split(" - ")[1];
+                }
+                route["rid"] = 'r' + route.RouteId;
+                return route;
+            })
+
+            self.setState({ visiableRoutes: visiableRoutes })
         })
     }
 
@@ -264,6 +274,7 @@ class CataBusMap extends Component {
         this.currentRouteID = RouteId;
         Taro.setStorageSync(this.localStoreRouteIdKey, RouteId);
         this.getRouteDetail(RouteId);
+        this.setState({ toview_rid: 'r' + RouteId })
     }
 
     backButtonOnClick() {
@@ -323,7 +334,7 @@ class CataBusMap extends Component {
 
     render() {
         const { globalStore: { windowHeight, statusBarHeight } } = this.props
-        const { longitude, latitude, scale, visiableRoutes, markers, polylineData, showTimeTable, timetableData } = this.state;
+        const { longitude, latitude, scale, visiableRoutes, markers, polylineData, showTimeTable, timetableData, toview_rid } = this.state;
         const routerPageCount = Taro.getCurrentPages().length;
 
         return (
@@ -347,7 +358,9 @@ class CataBusMap extends Component {
                     scrollY={true}
                     scrollX={false}
                     scrollWithAnimation={true}
-                    enableBackToTop={true}>
+                    enableBackToTop={true}
+                    scrollIntoView={toview_rid}
+                    scrollWithAnimation={true}>
                     {showTimeTable ? (
                         <AtList>
                             <AtListItem title={"关闭时间表"} onClick={this.closeTimeTable.bind()} />
@@ -367,17 +380,24 @@ class CataBusMap extends Component {
                             )}
                         </AtList>)
                         : (
-                            <AtList>
+                            <View>
                                 {visiableRoutes.map((route) =>
-                                    <AtListItem title={route.LongName} arrow='right' key={route.RouteId} onClick={() => this.routeOnClick(route.RouteId)}
-                                        iconInfo={{
-                                            size: 25,
-                                            color: '#' + route.Color, value: 'star-2',
-                                        }} />
+                                    <View
+                                        id={route.rid}
+                                        onClick={() => this.routeOnClick(route.RouteId)} key={route.RouteId}
+                                        style={{ padding: '8px', borderLeft: '16px solid #' + route.Color, margin: '16px 8px', borderRadius: '8px', boxShadow: '0px 2px 8px #ddd', background: "#ffffff" }}>
+                                        <Text style={{ fontSize: '26px', fontWeight: 'bold', display: 'block', color: '#' + route.Color }}>{route.RouteAbbreviation}</Text>
+                                        <Text style={{ fontSize: '16px', fontWeight: 'bold' }}>{route.LongName}</Text>
+                                    </View>
+                                    // <AtListItem title={route.LongName} arrow='right' key={route.RouteId} onClick={() => this.routeOnClick(route.RouteId)}
+                                    //     iconInfo={{
+                                    //         size: 25,
+                                    //         color: '#' + route.Color, value: 'star-2',
+                                    //     }} />
                                 )}
-                            </AtList>
+                            </View>
                         )}
-
+                    <InfoFooter></InfoFooter>
                 </ScrollView>
 
             </View >
