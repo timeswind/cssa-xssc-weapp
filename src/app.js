@@ -10,6 +10,7 @@ import "taro-ui/dist/style/components/search-bar.scss";
 import "taro-ui/dist/style/components/button.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import "taro-ui/dist/style/components/accordion.scss";
+import "taro-ui/dist/style/components/flex.scss";
 
 import './app.css';
 // import 'taro-ui/dist/style/index.scss'

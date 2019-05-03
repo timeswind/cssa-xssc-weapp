@@ -9,6 +9,8 @@ import '../../images/icons8-bus-48.png';
 import xmlparser from 'fast-xml-parser'
 import InfoFooter from '../../components/footerinfo';
 
+import './bus.css';
+
 @inject('globalStore')
 @observer
 class CataBusMap extends Component {
@@ -19,6 +21,8 @@ class CataBusMap extends Component {
         super(props);
         this.routeThemeColor = "#000000";
         this.localStoreRouteIdKey = "__maps_catabus_routeid";
+        this.localStoreTabKey = "__maps_catabus_tab";
+        this.localStoreBookmarkRouteIdsKey = "__maps_catabus_bookmark_routeids"
 
         this.didShowState = true
 
@@ -31,6 +35,22 @@ class CataBusMap extends Component {
         this.vehicleMarkers = []
         this.stopMarkers = []
 
+        this.tabs = [{
+            key: 0,
+            name: "RouteBookMark",
+            title: "我的收藏"
+        }, {
+            key: 1,
+            name: "AllRoutes",
+            title: "所有路线"
+        }, {
+            key: 2,
+            name: "SchoolRoutes",
+            title: "校内巴士"
+        }]
+
+        this.schoolRouteIds = [55, 57, 51, 53, 62, 64];
+
         this.state = {
             longitude: '-77.859730',
             latitude: '40.803300',
@@ -40,7 +60,9 @@ class CataBusMap extends Component {
             polylineData: [],
             showTimeTable: false,
             timetableData: {},
-            toview_rid: ""
+            toview_rid: "",
+            activeTabKey: (Taro.getStorageSync(this.localStoreTabKey) !== "") ? Taro.getStorageSync(this.localStoreTabKey) : 1,
+            bookmarkRouteIds: this.getbookmarkRouteIds()
         }
     }
 
@@ -332,10 +354,95 @@ class CataBusMap extends Component {
         this.setState({ showTimeTable: false })
     }
 
+    tabOnClick(event) {
+        event.stopPropagation();
+        this.setState({ activeTabKey: event.currentTarget.dataset.key });
+        Taro.setStorageSync(this.localStoreTabKey, event.currentTarget.dataset.key);
+    }
+
+    getbookmarkRouteIds() {
+        var bookMarkRoutes = Taro.getStorageSync(this.localStoreBookmarkRouteIdsKey);
+        if (bookMarkRoutes) {
+            bookMarkRoutes = JSON.parse(bookMarkRoutes);
+            return bookMarkRoutes
+        } else {
+            return []
+        }
+    }
+
+    addRouteToBookmark(RouteId) {
+        console.log('addRouteToBookmark')
+        var bookMarkRoutes = Taro.getStorageSync(this.localStoreBookmarkRouteIdsKey);
+        if (bookMarkRoutes) {
+            bookMarkRoutes = JSON.parse(bookMarkRoutes);
+            if (bookMarkRoutes.indexOf(RouteId) === -1) {
+                bookMarkRoutes.push(RouteId);
+                Taro.setStorageSync(this.localStoreBookmarkRouteIdsKey, JSON.stringify(bookMarkRoutes));
+                this.setState({ bookmarkRouteIds: bookMarkRoutes })
+            }
+        } else {
+            let bookMarkRoutes = []
+            bookMarkRoutes.push(RouteId);
+            Taro.setStorageSync(this.localStoreBookmarkRouteIdsKey, JSON.stringify(bookMarkRoutes));
+            this.setState({ bookmarkRouteIds: bookMarkRoutes })
+
+        }
+
+    }
+
+    removeRouteFromBookmark(RouteId) {
+        console.log('removeRouteFromBookmark')
+        var bookMarkRoutes = Taro.getStorageSync(this.localStoreBookmarkRouteIdsKey);
+        bookMarkRoutes = JSON.parse(bookMarkRoutes);
+        if (bookMarkRoutes.indexOf(RouteId) > -1) {
+            bookMarkRoutes = bookMarkRoutes.filter(function (id) {
+                return id !== RouteId
+            })
+            Taro.setStorageSync(this.localStoreBookmarkRouteIdsKey, JSON.stringify(bookMarkRoutes));
+            this.setState({ bookmarkRouteIds: bookMarkRoutes })
+        }
+    }
+
+    bookMarkIconOnClick(event) {
+        event.stopPropagation()
+        if ('key' in event.currentTarget.dataset) {
+            let RouteId = event.currentTarget.dataset.key;
+            let bookmarkRouteIds = this.getbookmarkRouteIds();
+
+            if (bookmarkRouteIds.indexOf(RouteId) > -1) {
+                this.removeRouteFromBookmark(RouteId)
+            } else {
+                this.addRouteToBookmark(RouteId)
+            }
+        }
+    }
+
     render() {
         const { globalStore: { windowHeight, statusBarHeight } } = this.props
-        const { longitude, latitude, scale, visiableRoutes, markers, polylineData, showTimeTable, timetableData, toview_rid } = this.state;
+        const { longitude, latitude, scale, visiableRoutes, markers, polylineData, showTimeTable, timetableData, toview_rid, activeTabKey, bookmarkRouteIds } = this.state;
         const routerPageCount = Taro.getCurrentPages().length;
+
+        var routeListData = visiableRoutes;
+
+        routeListData.map(function (route) {
+            if (bookmarkRouteIds.indexOf(route.RouteId) > -1) {
+                route['bookmark'] = true
+            } else {
+                route['bookmark'] = false
+            }
+            return route
+        })
+
+        let self = this;
+        if (activeTabKey == 2) {
+            routeListData = visiableRoutes.filter(function (route) {
+                return self.schoolRouteIds.indexOf(route.RouteId) > - 1
+            })
+        } else if (activeTabKey == 0) {
+            routeListData = visiableRoutes.filter(function (route) {
+                return bookmarkRouteIds.indexOf(route.RouteId) > - 1
+            })
+        }
 
         return (
             <View>
@@ -361,6 +468,17 @@ class CataBusMap extends Component {
                     enableBackToTop={true}
                     scrollIntoView={toview_rid}
                     scrollWithAnimation={true}>
+                    <View className='at-row tabs'>
+                        {this.tabs.map((tab) =>
+                            <View className={(activeTabKey === tab.key) ? 'at-col tab tab__active' : 'at-col tab'}
+                                key={tab.key}
+                                data-key={tab.key}
+                                style={{ textAlign: 'center' }}
+                                onClick={this.tabOnClick.bind()}>
+                                <Text>{tab.title}</Text>
+                            </View>
+                        )}
+                    </View>
                     {showTimeTable ? (
                         <AtList>
                             <AtListItem title={"关闭时间表"} onClick={this.closeTimeTable.bind()} />
@@ -381,13 +499,20 @@ class CataBusMap extends Component {
                         </AtList>)
                         : (
                             <View>
-                                {visiableRoutes.map((route) =>
+                                {routeListData.map((route) =>
                                     <View
                                         id={route.rid}
                                         onClick={() => this.routeOnClick(route.RouteId)} key={route.RouteId}
-                                        style={{ padding: '8px', borderLeft: '16px solid #' + route.Color, margin: '16px 8px', borderRadius: '8px', boxShadow: '0px 2px 8px #ddd', background: "#ffffff" }}>
-                                        <Text style={{ fontSize: '26px', fontWeight: 'bold', display: 'block', color: '#' + route.Color }}>{route.RouteAbbreviation}</Text>
-                                        <Text style={{ fontSize: '16px', fontWeight: 'bold' }}>{route.LongName}</Text>
+                                        className="route_card"
+                                        style={{ borderLeft: '16px solid #' + route.Color }}>
+                                        <View className="at-row">
+                                            <View className="at-col">
+                                                <Text style={{ fontSize: '26px', fontWeight: 'bold', display: 'block', color: '#' + route.Color }}>{route.RouteAbbreviation}</Text>
+                                                <Text style={{ fontSize: '16px', fontWeight: 'bold' }}>{route.LongName}</Text>
+                                            </View>
+                                            <View className='at-icon at-icon-star-2' style={{ fontSize: '26px', color: (route.bookmark ? '#ffc107' : "#ddd") }} data-key={route.RouteId} onClick={this.bookMarkIconOnClick.bind()}></View>
+                                        </View>
+
                                     </View>
                                     // <AtListItem title={route.LongName} arrow='right' key={route.RouteId} onClick={() => this.routeOnClick(route.RouteId)}
                                     //     iconInfo={{
