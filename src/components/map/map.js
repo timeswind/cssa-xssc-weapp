@@ -6,15 +6,18 @@ class MyMap extends Component {
         addGlobalClass: true
     }
 
-    markerOnTap(event) {
+    markerOnTap = (event) => {
+        event.preventDefault()
         if (this.props.onMarkerTap !== null) {
             this.props.onMarkerTap(event)
         }
     }
 
-    onTap(event) {
+    onTap = (event) => {
         event.preventDefault();
-        event.stopPropagation();
+        if (this.props.onTap !== null) {
+            this.props.onTap(event)
+        }
     }
 
     render() {

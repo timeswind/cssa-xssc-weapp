@@ -96,9 +96,12 @@ class MarkdownReader extends Component {
             this.fetchSearchDic()
         }
         if (this.menuData.length === 0) {
-            this.fetchMenu(config.menuMarkdownKey + '?t=' + new Date().getTime())
+            // this.fetchMenu(config.menuMarkdownKey + '?t=' + new Date().getTime())
+            this.fetchMenu(config.menuMarkdownKey)
         }
     }
+
+    
 
     componentDidMount() {
         this.handleProps(this.props)
@@ -198,7 +201,12 @@ class MarkdownReader extends Component {
             var self = this;
             const menuData = this.menuData;
             globalStore.setToView("")
+            Taro.showLoading({
+                title: '加载中...',
+                mask: false
+            })
             this.fetchContent(section, function (data) {
+                Taro.hideLoading()
                 if (section !== self.currentSection) {
                     Taro.pageScrollTo({
                         scrollTop: 0,
@@ -230,7 +238,8 @@ class MarkdownReader extends Component {
 
     openMenuDrawer = () => {
         if (this.menuData.length === 0) {
-            this.fetchMenu(this.menuMarkdownKey + '?t=' + new Date().getTime())
+            // this.fetchMenu(this.menuMarkdownKey + '?t=' + new Date().getTime())
+            this.fetchMenu(this.menuMarkdownKey)
         }
         this.setState({ drawerShow: true })
     }
@@ -240,24 +249,26 @@ class MarkdownReader extends Component {
     }
 
     prevSection = () => {
-        if (process.env.TARO_ENV === 'weapp') {
-            wx.reportAnalytics('freshman_wiki_switch_page', {
-                op: 'prev',
-            });
-        }
+        // if (process.env.TARO_ENV === 'weapp') {
+        //     wx.reportAnalytics('freshman_wiki_switch_page', {
+        //         op: 'prev',
+        //     });
+        // }
         var currentSectionIndex = this.findSectionIndex(this.menuData, this.currentSection)
+        // console.log(currentSectionIndex)
         if (currentSectionIndex !== -1 && currentSectionIndex !== 0) {
             this.fetchSectionByIndex(currentSectionIndex - 1)
         }
     }
 
     nextSection = () => {
-        if (process.env.TARO_ENV === 'weapp') {
-            wx.reportAnalytics('freshman_wiki_switch_page', {
-                op: 'next',
-            });
-        }
+        // if (process.env.TARO_ENV === 'weapp') {
+        //     wx.reportAnalytics('freshman_wiki_switch_page', {
+        //         op: 'next',
+        //     });
+        // }
         var currentSectionIndex = this.findSectionIndex(this.menuData, this.currentSection)
+        // console.log(currentSectionIndex)
         if (currentSectionIndex !== -1 && currentSectionIndex !== (this.menuData.length - 1)) {
             this.fetchSectionByIndex(currentSectionIndex + 1)
         }

@@ -5,3 +5,13 @@
     box-shadow: 0PX 2PX 8PX #ddd;
     background: #ffffff;
 }
+
+.timetable-time {
+    text-align: center;
+    padding: 8PX 0;
+    margin: 8PX;
+    background: #ee5050;
+    border-radius: 8PX;
+    font-weight: bold;
+    color: #fff;
+}

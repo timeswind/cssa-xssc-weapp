@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro';
 import { ScrollView } from '@tarojs/components';
 import MyMap from '../../components/map/map';
 import { fetchContent, catabusApi } from '../../utils/api';
-import { AtList, AtListItem, AtAccordion } from "taro-ui"
+import { AtList, AtListItem } from "taro-ui"
 import { observer, inject } from '@tarojs/mobx'
 import '../../images/icons8-marker-40.png';
 import '../../images/icons8-bus-48.png';
@@ -116,7 +116,12 @@ class CataBusMap extends Component {
         let timestamp = '' + new Date().getTime();
         let url = catabusApi.GetVisibleRoutesEndPoint.replace('{timestamp}', timestamp)
         let self = this;
+        Taro.showLoading({
+            title: '加载可用巴士路线中',
+            mask: true
+        })
         fetchContent(url, function (data) {
+            Taro.hideLoading();
             let dic = {};
             data.forEach(function (routeItem) {
                 dic[routeItem.RouteId] = routeItem
@@ -124,7 +129,9 @@ class CataBusMap extends Component {
             self.routeIdDic = dic;
             let visiableRoutes = data.map(function (route) {
                 if (route.LongName.indexOf(" - ") > 0) {
-                    route.LongName = route.LongName.split(" - ")[1];
+                    route.LongNameDescription = route.LongName.split(" - ")[1];
+                } else {
+                    route.LongNameDescription = route.LongName;
                 }
                 route["rid"] = 'r' + route.RouteId;
                 return route;
@@ -140,7 +147,13 @@ class CataBusMap extends Component {
             let url = catabusApi.RouteDetailsEndPoint.replace('{timestamp}', timestamp)
             url = url.replace('{routeID}', RouteId)
             let self = this;
+            Taro.showLoading({
+                title: '加载路线详情中',
+                icon: 'loading',
+                mask: true
+            })
             fetchContent(url, function (data) {
+                Taro.hideLoading()
                 if ('Color' in data) {
                     self.routeThemeColor = '#' + data.Color;
                 }
@@ -322,32 +335,77 @@ class CataBusMap extends Component {
         }
     }
 
+    mapOnTap(event) {
+        this.setState({ showTimeTable: false })
+    }
+
     generateStopTimeTable(stopDepartureInfo) {
-        var RouteDirections = stopDepartureInfo.RouteDirections;
-        let currentRouteID = this.currentRouteID;
-        var currentRouteStopDeparture = {}
-        var otherRouteStopDeparture = []
-        let self = this
+        if (stopDepartureInfo && 'RouteDirections' in stopDepartureInfo && stopDepartureInfo.RouteDirections.length > 0) {
+            var RouteDirections = stopDepartureInfo.RouteDirections;
+            let currentRouteID = this.currentRouteID;
+            var currentRouteStopDeparture = null
+            var otherRouteStopDeparture = []
+            let self = this
 
 
-        RouteDirections.forEach(function (RouteDirection) {
-            if (RouteDirection.RouteId === currentRouteID) {
-                currentRouteStopDeparture = {
-                    routeName: self.routeIdDic[RouteDirection.RouteId].LongName,
-                    Departures: RouteDirection.Departures
+            RouteDirections.forEach(function (RouteDirection) {
+                let departuresData = self.parseDeparturesData(RouteDirection.Departures);
+                if (RouteDirection.RouteId === currentRouteID) {
+                    currentRouteStopDeparture = {
+                        routeName: self.routeIdDic[RouteDirection.RouteId].LongName,
+                        color: self.routeIdDic[RouteDirection.RouteId].Color,
+                        Departures: departuresData,
+                        direction: RouteDirection.Direction
+                    }
+                } else {
+                    let RouteStopDeparture = {
+                        routeName: self.routeIdDic[RouteDirection.RouteId].LongName,
+                        color: self.routeIdDic[RouteDirection.RouteId].Color,
+                        Departures: departuresData,
+                        direction: RouteDirection.Direction
+                    }
+                    otherRouteStopDeparture.push(RouteStopDeparture)
                 }
-            } else {
-                let RouteStopDeparture = {
-                    routeName: self.routeIdDic[RouteDirection.RouteId].LongName,
-                    Departures: RouteDirection.Departures
-                }
-                otherRouteStopDeparture.push(RouteStopDeparture)
-            }
-        });
+            });
 
 
-        // this.setState({ showTimeTable: true, timetableData: { currentRouteStopDeparture, otherRouteStopDeparture } })
+            this.setState({ showTimeTable: true, timetableData: { currentRouteStopDeparture, otherRouteStopDeparture }, toview_rid: "scrolltop" })
+        } else {
+            Taro.showModal({
+                title: "提醒",
+                content: "该站点现在没有运行的巴士"
+            })
+        }
 
+    }
+
+    parseDeparturesData(Departures) {
+        if (Departures) {
+            let self = this;
+            let results = Departures.map(function (departure) {
+                departure["depart_time"] = self.toDisplayTime(departure.ETA)
+                return departure;
+            })
+            return results
+        } else {
+            return []
+        }
+    }
+
+    toDisplayTime(departureTime) {
+        let regex = /(?:\/Date\()(.*)(?:-0400\))/
+        let time = departureTime.match(regex)[1];
+        let date = new Date();
+        date.setTime(time)
+
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+        return strTime;
     }
 
     closeTimeTable() {
@@ -371,7 +429,6 @@ class CataBusMap extends Component {
     }
 
     addRouteToBookmark(RouteId) {
-        console.log('addRouteToBookmark')
         var bookMarkRoutes = Taro.getStorageSync(this.localStoreBookmarkRouteIdsKey);
         if (bookMarkRoutes) {
             bookMarkRoutes = JSON.parse(bookMarkRoutes);
@@ -391,7 +448,6 @@ class CataBusMap extends Component {
     }
 
     removeRouteFromBookmark(RouteId) {
-        console.log('removeRouteFromBookmark')
         var bookMarkRoutes = Taro.getStorageSync(this.localStoreBookmarkRouteIdsKey);
         bookMarkRoutes = JSON.parse(bookMarkRoutes);
         if (bookMarkRoutes.indexOf(RouteId) > -1) {
@@ -443,7 +499,7 @@ class CataBusMap extends Component {
                 return bookmarkRouteIds.indexOf(route.RouteId) > - 1
             })
         }
-
+        console.log(timetableData)
         return (
             <View>
                 <MyMap
@@ -455,7 +511,8 @@ class CataBusMap extends Component {
                     showBackBotton={true}
                     fullScreen={false}
                     onMarkerTap={this.markerOnTap.bind()}
-                    height={windowHeight / 2 + 'px'}>
+                    height={windowHeight / 2 + 'px'}
+                    onTap={this.mapOnTap.bind()}>
                     <CoverView className="coverview-back-botton" onClick={() => this.backButtonOnClick()} style={"top:" + (statusBarHeight + 8) + "px"}>
                         <CoverView style="font-size:16px;color:#fff;font-weight: bold;display:inline">{routerPageCount >= 2 ? '返回' : '首页'}</CoverView>
                     </CoverView>
@@ -468,37 +525,92 @@ class CataBusMap extends Component {
                     enableBackToTop={true}
                     scrollIntoView={toview_rid}
                     scrollWithAnimation={true}>
-                    <View className='at-row tabs'>
-                        {this.tabs.map((tab) =>
-                            <View className={(activeTabKey === tab.key) ? 'at-col tab tab__active' : 'at-col tab'}
-                                key={tab.key}
-                                data-key={tab.key}
-                                style={{ textAlign: 'center' }}
-                                onClick={this.tabOnClick.bind()}>
-                                <Text>{tab.title}</Text>
-                            </View>
-                        )}
-                    </View>
                     {showTimeTable ? (
                         <AtList>
-                            <AtListItem title={"关闭时间表"} onClick={this.closeTimeTable.bind()} />
-                            <AtAccordion
-                                open={true}
-                                title={timetableData.currentRouteStopDeparture.routeName}
-                            >
+                            <View id="scrolltop"></View>
+                            <View style={{ textAlign: 'center', paddingTop: '16px' }}>
+                                <Button className="black-theme-button"
+                                    onClick={this.closeTimeTable.bind()}>
+                                    <Text className='at-icon at-icon-close'
+                                        style="font-size:18px;color:#fff;font-weight: bold">关闭时间表</Text>
+                                </Button>
+                            </View>
 
-                                <AtList hasBorder={false}>
-                                    {timetableData.currentRouteStopDeparture.Departures.map((data) =>
-                                        <AtListItem title={(new Date(data.ETALocalTime) - new Date()) + '分钟'} arrow='right' key={data.ETALocalTime} />
-                                    )}
-                                </AtList>
-                            </AtAccordion>
-                            {timetableData.otherRouteStopDeparture.map((data) =>
-                                <AtListItem title={data.routeName} arrow='right' key={data.routeName} />
+                            {timetableData.currentRouteStopDeparture ? (
+                                <View>
+                                    <View
+                                        className="route_card"
+                                        style={{ borderLeft: '16px solid #' + timetableData.currentRouteStopDeparture.color }}>
+                                        <View className="at-row">
+                                            <View className="at-col">
+
+                                                <Text style={{ fontSize: '16px', fontWeight: 'bold' }}>{timetableData.currentRouteStopDeparture.routeName}</Text>
+                                            </View>
+                                        </View>
+
+                                    </View>
+                                    <View className='at-row at-row--wrap'>
+                                        {timetableData.currentRouteStopDeparture.Departures.map((data) =>
+                                            <View className='at-col at-col-4' key={data.ETALocalTime}>
+                                                <View className='timetable-time'>{data.depart_time}</View>
+                                            </View>
+                                        )}
+                                    </View>
+                                </View>
+                            ) : (
+                                    <View className="route_card">
+                                        <View className="at-row">
+                                            <View className="at-col">
+                                                <Text style={{ fontSize: '16px', fontWeight: 'bold' }}>该线路在本站暂时没有运行计划</Text>
+                                            </View>
+                                        </View>
+
+                                    </View>
+                                )}
+
+
+                            {timetableData.otherRouteStopDeparture.map((RouteStopDeparture) =>
+                                <View key={RouteStopDeparture.RouteId}>
+                                    <View
+                                        className="route_card"
+                                        style={{ borderLeft: '16px solid #' + RouteStopDeparture.color }}>
+                                        <View className="at-row">
+                                            <View className="at-col">
+                                                <Text style={{ fontSize: '26px', fontWeight: 'bold', display: 'block', color: '#' + RouteStopDeparture.color }}>{RouteStopDeparture.direction}</Text>
+                                                <Text style={{ fontSize: '16px', fontWeight: 'bold' }}>{RouteStopDeparture.routeName}</Text>
+                                            </View>
+                                        </View>
+
+                                    </View>
+                                    <View className='at-row at-row--wrap'>
+                                        {RouteStopDeparture.Departures.map((data) =>
+                                            <View className='at-col at-col-4' key={data.ETALocalTime}>
+                                                <View className='timetable-time'>{data.depart_time}</View>
+                                            </View>
+                                        )}
+                                        {RouteStopDeparture.Departures.length === 0 && (
+                                            <View className="at-col" style={{ textAlign: 'center', marginBottom: "32px" }}>
+                                                <Text style={{ fontSize: '16px', fontWeight: 'bold', color: "#aaa" }}>该线路在本站暂时没有运行计划</Text>
+                                            </View>
+                                        )}
+                                    </View>
+                                </View>
                             )}
                         </AtList>)
                         : (
                             <View>
+                                <View id="scrolltop"></View>
+                                <View className='at-row tabs'>
+                                    {this.tabs.map((tab) =>
+                                        <View className={(activeTabKey === tab.key) ? 'at-col tab tab__active' : 'at-col tab'}
+                                            key={tab.key}
+                                            data-key={tab.key}
+                                            style={{ textAlign: 'center' }}
+                                            onClick={this.tabOnClick.bind()}>
+                                            <Text>{tab.title}</Text>
+                                        </View>
+                                    )}
+                                </View>
                                 {routeListData.map((route) =>
                                     <View
                                         id={route.rid}
@@ -508,17 +620,12 @@ class CataBusMap extends Component {
                                         <View className="at-row">
                                             <View className="at-col">
                                                 <Text style={{ fontSize: '26px', fontWeight: 'bold', display: 'block', color: '#' + route.Color }}>{route.RouteAbbreviation}</Text>
-                                                <Text style={{ fontSize: '16px', fontWeight: 'bold' }}>{route.LongName}</Text>
+                                                <Text style={{ fontSize: '16px', fontWeight: 'bold' }}>{route.LongNameDescription}</Text>
                                             </View>
                                             <View className='at-icon at-icon-star-2' style={{ fontSize: '26px', color: (route.bookmark ? '#ffc107' : "#ddd") }} data-key={route.RouteId} onClick={this.bookMarkIconOnClick.bind()}></View>
                                         </View>
 
                                     </View>
-                                    // <AtListItem title={route.LongName} arrow='right' key={route.RouteId} onClick={() => this.routeOnClick(route.RouteId)}
-                                    //     iconInfo={{
-                                    //         size: 25,
-                                    //         color: '#' + route.Color, value: 'star-2',
-                                    //     }} />
                                 )}
                             </View>
                         )}

@@ -94,6 +94,15 @@ page {
     z-index: 99;
 }
 
+.black-theme-button {
+    height: 44PX;
+    background: #1b1b1b;
+    color: #fff;
+    text-align: center;
+    line-height: 44PX;
+    display: inline-block;
+}
+
 .coverview-home-button, .coverview-back-botton {
     height: 64rpx;
     background: #1b1b1b;

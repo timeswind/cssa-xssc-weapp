@@ -5,6 +5,9 @@ const fetchContent = function (url, callback) {
         url: url,
         success: function (data) {
             callback(data.data)
+        },
+        fail: function () {
+            callback(null)
         }
     });
 }
@@ -21,9 +24,20 @@ const catabusApi = {
     GetStopDeptureEndPoint: "https://catabus.cssapsu.cn/v1/InfoPoint/rest/StopDepartures/Get/{stopID}"
 }
 
+const psuMapApi = {
+    byCategories: [
+        {
+            category: 'Dinning',
+            categoryNameCN: '餐饮',
+            endpoint: 'https://idd.cssapsu.cn/maps/psu/dinning.json'
+        }
+    ]
+}
+
 
 module.exports = {
     fetchContent,
     defaultServerEndpoint,
-    catabusApi
+    catabusApi,
+    psuMapApi
 }
