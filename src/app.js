@@ -39,6 +39,7 @@ class App extends Component {
         'pages/yearbook/reader',
         // 'pages/maps/school',
         'pages/maps/bus',
+        'pages/maps/school_food',
         'pages/sitemaps/index',
         'pages/sitemaps/freshman_wiki',
         'pages/sitemaps/major_wiki'

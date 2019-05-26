@@ -499,7 +499,6 @@ class CataBusMap extends Component {
                 return bookmarkRouteIds.indexOf(route.RouteId) > - 1
             })
         }
-        console.log(timetableData)
         return (
             <View>
                 <MyMap

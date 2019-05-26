@@ -46,6 +46,11 @@ page {
     justify-content: center;
 }
 
+.navigationcard_wrapper_small {
+    display: flex;
+    justify-content: left;
+}
+
 .navigationcard {
     border-radius: 10px;
     width: 100%;
@@ -61,6 +66,20 @@ page {
     display: block;
     font-size: 64rpx;
     text-shadow: 1px 1px 1px #333;
+}
+
+.navigationcard_small {
+    border-radius: 10px;
+    width: 50%;
+    height: 100;
+    text-align: center;
+    padding: 16px;
+    background: #2196f3;
+}
+
+.navigationcard_small .title {
+    color: #fff;
+    font-weight: bold;
 }
 
 .index_card .title {

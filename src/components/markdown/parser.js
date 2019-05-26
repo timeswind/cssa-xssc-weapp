@@ -72,6 +72,7 @@ function parse(md, options) {
 						};
 					}
 				} else if (token.type === 'image') {
+					const aliyun_image_process_query_style_name = "?x-oss-process=style/miniprogram-markdown-reader-image"
 					var img_alt = ""
 
 					if (token.alt && token.alt.search("&#x") > -1) {
@@ -82,17 +83,23 @@ function parse(md, options) {
 					var splits = token.src.split('/')
 					var imageKey = splits[splits.length - 1]
 					var src = 'gitbook/assets/' + imageKey
+
+					//process image to add watermark and reduce size
+					src = src + aliyun_image_process_query_style_name
+
 					if (options.imageServerEndpoint) {
 						src = options.imageServerEndpoint + src
 						if (token.src.search('https://') > -1 || token.src.search('data:image/') > -1) {
-							src = token.src
+							// src = token.src
+							// ignore image
+						} else {
+							ret.push({
+								type: token.type,
+								src: src,
+								alt: img_alt,
+								selectable: true
+							});
 						}
-						ret.push({
-							type: token.type,
-							src: src,
-							alt: img_alt,
-							selectable: true
-						});
 					}
 				}
 			});

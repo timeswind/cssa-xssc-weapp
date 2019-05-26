@@ -68,6 +68,12 @@ class IndexPage extends Component {
             <Text style="font-weight: bold; color: #0d47a1; font-size: 18px;margin-top:4px;display: block">巴士线路时刻</Text>
           </View>
         </View>
+        <View className="navigationcard_wrapper_small" style="margin: 16px;margin-top:0;padding-top:0">
+          <View className="navigationcard_small" onClick={() => this.navigate('/pages/maps/school_food')}>
+            <Text className="title">校内餐饮地图</Text>
+            <Text style="font-weight: bold; color: #0d47a1; font-size: 18px;margin-top:4px;display: block">Food in Campus</Text>
+          </View>
+        </View>
         <View style="text-align: right;margin-right: 32rpx;font-weight: bold">
           <View>
             <Text style="color: #999">
