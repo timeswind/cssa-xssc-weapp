@@ -1,0 +1,24 @@
+.school_food_card {
+    padding: 16PX;
+    margin: 16PX 8PX;
+    border-radius: 8PX;
+    box-shadow: 0PX 2PX 8PX #ddd;
+    background: #ffffff;
+}
+
+.school_food_card .category_title {
+    padding-bottom: 16rpx;
+}
+
+.school_food_card .item_title {
+    border-top: 1rpx solid #ddd;
+    padding: 16rpx 0;
+    font-weight: bold;
+}
+
+.school_food_card .item_title:active {
+    border-top: 1rpx solid #ddd;
+    padding: 16rpx 0;
+    font-weight: bold;
+    color: #aaa
+}
