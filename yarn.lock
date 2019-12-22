@@ -1246,10 +1246,22 @@
   dependencies:
     "@tarojs/utils" "1.3.31"
 
+"@tarojs/taro@2.0.0-beta.10":
+  version "2.0.0-beta.10"
+  resolved "https://registry.yarnpkg.com/@tarojs/taro/-/taro-2.0.0-beta.10.tgz#6decd9a3210ee68f4722d5c86cfcea8a28848742"
+  integrity sha512-ZvaaDr0ddgnt0v+AQF7URrGdY/Et3FihLMVipbLuYvd1rlZm8Y7leny/FAMZ6IBuncFe5HG2RIVXkisE5RnyRw==
+  dependencies:
+    "@tarojs/utils" "2.0.0-beta.10"
+
 "@tarojs/utils@1.3.31":
   version "1.3.31"
   resolved "https://registry.yarnpkg.com/@tarojs/utils/-/utils-1.3.31.tgz#c0a83b2992dc8184e7ebb2e664073804b244d3c3"
   integrity sha512-TcFbmvtGDSMQ8xz5fn019MuHBQ6qqhDVjbL1VgMlObBvH0oCGeU9PYEiF6d4JjMXxlJi75+05GPh1fEU+rA2ig==
+
+"@tarojs/utils@2.0.0-beta.10":
+  version "2.0.0-beta.10"
+  resolved "https://registry.yarnpkg.com/@tarojs/utils/-/utils-2.0.0-beta.10.tgz#e7e3854d73ac3aad63c14ab636a553be0357e482"
+  integrity sha512-/2cPPibkIXDe/GUjiksgCZgl3g008kdcgDawl4oRseitmF/AcnZF74Hne0baE1Fac6xM4FIyxg4NgnGmUgZZ4g==
 
 "@tarojs/webpack-runner@1.3.31":
   version "1.3.31"
@@ -1296,6 +1308,14 @@
     webpack-chain "4.9.0"
     webpack-dev-server "3.1.14"
     webpack-format-messages "2.0.3"
+
+"@tarojs/with-weapp@^2.0.0-beta.10":
+  version "2.0.0-beta.10"
+  resolved "https://registry.yarnpkg.com/@tarojs/with-weapp/-/with-weapp-2.0.0-beta.10.tgz#de4aae108e2410adbab3435bf4076cdc9099b420"
+  integrity sha512-Fy0b0Mk7QpX5/q9DMsshM0YqPPNL7vLoMzhlr3SLWeiw2XPJHuD0R0nZtdR8joiN4nK+1sHbn2nCHSlok2o+vw==
+  dependencies:
+    "@tarojs/taro" "2.0.0-beta.10"
+    lodash "^4.17.11"
 
 "@types/chokidar@^1.7.5":
   version "1.7.5"
@@ -10067,7 +10087,7 @@ tar@^4, tar@^4.0.2:
     safe-buffer "^5.1.2"
     yallist "^3.0.2"
 
-taro-ui@^2.1.0:
+taro-ui@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/taro-ui/-/taro-ui-2.2.4.tgz#96a486432e86d6d0d1eda70383c47c3284f5e8e6"
   integrity sha512-EkVxp6eWnz5QLqf89Z3OVrVBZK5bvr1RgrP5ABFNizA+sMYdjHqJRV0O07Ulmj+whGLckCF5ACeE1Q4+E7iMCg==

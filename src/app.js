@@ -13,6 +13,7 @@ import "taro-ui/dist/style/components/accordion.scss";
 import "taro-ui/dist/style/components/flex.scss";
 
 import './app.css';
+
 // import 'taro-ui/dist/style/index.scss'
 
 // 如果需要在 h5 环境中开启 React Devtools
@@ -52,14 +53,15 @@ class App extends Component {
         navigationStyle: "custom"
       }
     }
-  }
-
+  } 
 
   componentDidMount() {
+    let self = this;
     Taro.getSystemInfo({
       success: res => {
         let modelmes = res.model
-        if (modelmes.search('iPhone X') != -1) {
+        console.log("device:", modelmes)
+        if (modelmes.search('iPhone X') != -1 || modelmes.search('iPhone12') != -1) {
           store.globalStore.setDevice("iPhone X")
         }
         store.globalStore.setWindowHeight(res.windowHeight)
