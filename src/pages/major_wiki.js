@@ -36,7 +36,6 @@ class xssc extends Component {
 
     onShareAppMessage(res) {
         const { globalStore: { currentSection, currentSectionTitle, toView } } = this.props
-        // console.log(this.readerConfig.pathPrefix + '?from=share&section=' + currentSection + '&toview=' + toView)
         return {
             title: currentSectionTitle + this.readerConfig.shareName,
             path: this.readerConfig.pathPrefix + '?from=share&section=' + currentSection + '&toview=' + toView
@@ -44,6 +43,7 @@ class xssc extends Component {
     }
 
     render() {
+        const {params} = this.state
         return (
             <MarkdownReader config={this.readerConfig} params={params} showSearchBar={true} showFooter={true}></MarkdownReader>
         )

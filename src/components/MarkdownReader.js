@@ -66,13 +66,14 @@ class MarkdownReader extends Component {
 
     handleProps(props) {
         const { params, config } = props
-        if ('version' in params && params.version !== 'undefined') {
+        
+        if (params !== null && 'version' in params && params.version !== 'undefined') {
             this.version = params.version
             this.contentServerEndpoint = this.apiPath + params.version + '/'
             this.imageServerEndpoint = this.apiPath + params.version + '/'
         }
 
-        if ('section' in params && params.section !== 'undefined') {
+        if (params !== null && 'section' in params && params.section !== 'undefined') {
             this.setCurrentSection(params.section)
             // Taro.setStorageSync(config.localStoreSectionKey, params.section);
             this.fetchSection(params.section);
@@ -88,7 +89,7 @@ class MarkdownReader extends Component {
             }
         }
 
-        if ('version' in params && params.version !== 'undefined') {
+        if (params !== null && 'version' in params && params.version !== 'undefined') {
             Taro.setStorageSync(config.localStoreVersionKey, params.version);
         }
 
