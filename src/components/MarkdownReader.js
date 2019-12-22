@@ -3,8 +3,10 @@ import { View, Button, Text } from '@tarojs/components'
 import { AtDrawer } from 'taro-ui'
 import Markdown from './markdown/markdown';
 import ReaderSearchBar from './readerSearchBar';
+import parseMenu from '../utils/parseMenu';
 import BackButton from './backButton';
-import { observer, inject } from '@tarojs/mobx'
+import MenuRow from './MenuRow';
+import { observer, inject } from '@tarojs/mobx';
 
 @inject('globalStore')
 @observer
@@ -54,9 +56,10 @@ class MarkdownReader extends Component {
         this.state = {
             md: '# 加载中...',
             drawerShow: false,
-            menuNameListArray: [],
+            menuItemCount: 0,
             searchResults: [],
-            currentSectionIndex: -2
+            currentSectionIndex: -2,
+            menuData: []
         }
     }
 
@@ -66,7 +69,7 @@ class MarkdownReader extends Component {
 
     handleProps(props) {
         const { params, config } = props
-        
+
         if (params !== null && 'version' in params && params.version !== 'undefined') {
             this.version = params.version
             this.contentServerEndpoint = this.apiPath + params.version + '/'
@@ -102,7 +105,7 @@ class MarkdownReader extends Component {
         }
     }
 
-    
+
 
     componentDidMount() {
         this.handleProps(this.props)
@@ -121,7 +124,7 @@ class MarkdownReader extends Component {
             return true
         }
 
-        if (this.state.menuNameListArray !== nextState.menuNameListArray) {
+        if (this.state.menuItemCount !== nextState.menuItemCount) {
             return true
         }
 
@@ -287,29 +290,16 @@ class MarkdownReader extends Component {
                 op: 'menu',
             });
         }
+        this.setState({drawerShow: false})
         this.fetchSectionByIndex(index)
     }
 
     fetchMenu(menuKey) {
         const { globalStore, globalStore: { currentSectionTitle } } = this.props;
-        var menuDataProcess = [];
-        var menuNameListProcess = [];
         var self = this;
-        this.fetchContent(menuKey, function (data) {
-            var lines = data.split('\n');
-            lines.splice(0, 2);
-            lines.pop();
-            lines.pop();
-            lines.forEach(function (line) {
-                var key = line.match(/\(([^)]+)\)/)[1];
-                var value = line.match(/\[([^)]+)\]/)[1];
-                var menu_item = {};
-                menu_item['key'] = key;
-                menu_item['value'] = value;
-                menuNameListProcess.push(value);
-                menuDataProcess.push(menu_item);
-            });
-            self.menuData = menuDataProcess;
+        this.fetchContent(menuKey, function (content) {
+            self.menuData = parseMenu(content);
+
             if (currentSectionTitle === "" && self.currentSection !== "" && self.menuData.length > 0) {
                 var currentSectionTitleFind = self.findSectionName(self.menuData, self.currentSection)
                 globalStore.setCurrentSectionTitle(currentSectionTitleFind)
@@ -319,7 +309,7 @@ class MarkdownReader extends Component {
                 var currentSectionIndexFind = self.findSectionIndex(self.menuData, self.currentSection)
                 self.setState({ currentSectionIndex: currentSectionIndexFind })
             }
-            self.setState({ menuNameListArray: menuNameListProcess })
+            self.setState({ menuItemCount: self.menuData.length, menuData: self.menuData })
         })
     }
 
@@ -385,7 +375,7 @@ class MarkdownReader extends Component {
 
     render() {
         const { globalStore: { deviceModel, statusBarHeight }, showSearchBar, showFooter } = this.props
-        const { md, drawerShow, searchResults, menuNameListArray, currentSectionIndex } = this.state;
+        const { md, drawerShow, searchResults, menuItemCount, menuData, currentSectionIndex } = this.state;
         const bottomBarStyleIphoneX = { width: "100%", position: "fixed", bottom: "0", paddingBottom: "34PX", height: "44PX", background: "#EE5050", display: "flex", flexDirection: "row" }
         const bottomBarStyleNormal = { width: "100%", position: "fixed", bottom: "0px", height: "44PX", background: "#EE5050", display: "flex", flexDirection: "row" }
 
@@ -408,9 +398,19 @@ class MarkdownReader extends Component {
                     mask
                     onClose={this.onMenuClose.bind(this)}
                     width={"90%"}
-                    onItemClick={this.menuClick.bind(this)}
-                    items={menuNameListArray}
-                ></AtDrawer>
+                >
+                    {menuData.map((menuItem, index) => {
+                        return (<MenuRow key={menuItem.key}
+                            index={index}
+                            menuItem={menuItem}
+                            isSecondary={menuItem.isSecondary}
+                            onItemClick={this.menuClick.bind(this)}
+                            isSelected={currentSectionIndex == index}/>)
+                    })}
+
+                    <View style="height: 80px"></View>
+
+                </AtDrawer>
                 <Markdown
                     md={md}
                     bottomOffset={deviceModel == "iPhone X" ? 78 : 44}
@@ -439,7 +439,7 @@ class MarkdownReader extends Component {
                     </View>
                     <View style="display: flex;flex:1;justify-content: center;font-size: 34rpx;align-items:center;"
                         onClick={this.nextSection}
-                        className={(menuNameListArray.length !== 0 && currentSectionIndex === (menuNameListArray.length - 1)) ? "reader_bottom_control_inactive" : "reader_bottom_control"}>
+                        className={(menuItemCount.length !== 0 && currentSectionIndex === (menuItemCount.length - 1)) ? "reader_bottom_control_inactive" : "reader_bottom_control"}>
                         <Text style="font-size:34rpx;font-weight: bold;color: inherit">下一章</Text>
                         <Text class="at-icon at-icon-chevron-right" style="font-size:34rpx;font-weight: bold;color: inherit"></Text>
                     </View>

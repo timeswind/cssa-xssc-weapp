@@ -1,0 +1,18 @@
+.menurow {
+    margin: 16px 0 16px 0;
+    padding: 8px 8px 16px 32px;
+    font-weight: bold;
+    border-left: 4PX solid #ee5050;
+    font-size: 18PX;
+}
+
+.menurow-secondary {
+    padding: 16px 16px 16px 64px;
+    font-size: 16PX;
+}
+
+.menurow-selected {
+    background-color: #ee5050;
+    color: #ffffff;
+    border-color: #ffffff;
+}
