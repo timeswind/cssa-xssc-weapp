@@ -1,5 +1,3 @@
-import Taro, { Component } from '@tarojs/taro'
-import { Provider } from '@tarojs/mobx'
 import Index from './pages/index/index'
 import globalStore from './store/global';
 
@@ -13,6 +11,9 @@ import "taro-ui/dist/style/components/accordion.scss";
 import "taro-ui/dist/style/components/flex.scss";
 
 import './app.css';
+import Taro, { Component } from '@tarojs/taro'
+import { Provider } from '@tarojs/mobx'
+
 
 // import 'taro-ui/dist/style/index.scss'
 

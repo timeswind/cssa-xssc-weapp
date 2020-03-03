@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro';
 
-const fetchContent = function (url, callback) {
+export const fetchContent = function (url, callback) {
     Taro.request({
         url: url,
         success: function (data) {
@@ -12,11 +12,11 @@ const fetchContent = function (url, callback) {
     });
 }
 
-const defaultServerEndpoint = "https://idd.cssapsu.cn/"
+export const defaultServerEndpoint = "https://idd.cssapsu.cn/"
 
 const catabusApiProxyServerEndpoint = "https://catabus.cssapsu.cn/v1/"
 
-const catabusApi = {
+export const catabusApi = {
     catabusApiProxyServerEndpoint,
     RouteDetailsEndPoint: `${catabusApiProxyServerEndpoint}InfoPoint/rest/RouteDetails/Get/{routeID}?_={timestamp}`,
     GetVisibleRoutesEndPoint: `${catabusApiProxyServerEndpoint}InfoPoint/rest/Routes/GetVisibleRoutes?_={timestamp}`,
@@ -29,7 +29,7 @@ const catabusApi = {
 const psuMapApiProxyServerEndpoint = "https://api0.cssapsu.cn/v1/psumap/"
 const psuMapAssetsApiProxyServerEndpoint = "https://api0.cssapsu.cn/v1/psumapassets/"
 
-const psuMapApi = {
+export const psuMapApi = {
     psuMapApiProxyServerEndpoint,
     psuMapAssetsApiProxyServerEndpoint,
     originalEndpoint: "https://api.concept3d.com/",
@@ -44,12 +44,4 @@ const psuMapApi = {
             copyEndpoint: `${defaultServerEndpoint}maps/psu/dinning.json`
         }
     ]
-}
-
-
-module.exports = {
-    fetchContent,
-    defaultServerEndpoint,
-    catabusApi,
-    psuMapApi
 }

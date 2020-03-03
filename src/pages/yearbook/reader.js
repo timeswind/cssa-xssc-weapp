@@ -1,6 +1,7 @@
-import { Component } from '@tarojs/taro'
 import MarkdownReader from '../../components/MarkdownReader';
+import { Component } from '@tarojs/taro'
 import { observer, inject } from '@tarojs/mobx'
+import { View } from '@tarojs/components'
 
 @inject('globalStore')
 @observer

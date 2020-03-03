@@ -1,5 +1,5 @@
-import Taro, { Component } from '@tarojs/taro'
-import { View, Button, Text } from '@tarojs/components'
+import { Component } from '@tarojs/taro'
+import { View } from '@tarojs/components'
 // import './footerinfo.css';
 import './MenuRow.css';
 

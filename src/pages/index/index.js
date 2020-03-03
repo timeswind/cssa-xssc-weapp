@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Button } from '@tarojs/components'
+import { View, Text, Button, Image } from '@tarojs/components'
 import './index.css'
 import CSSA_LOGO_2019_white_w400 from "../../images/CSSA_LOGO_2019_white_w400.png"
 import { observer, inject } from '@tarojs/mobx'

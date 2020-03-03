@@ -4,6 +4,8 @@ import BackButton from '../../components/backButton';
 
 class YearBookMenu extends Component {
 
+    componentWillMount() { }
+
     apiPath = "https://idd.cssapsu.cn/books/yearbook/"
     menuKey = 'bookname.data'
 
@@ -15,7 +17,6 @@ class YearBookMenu extends Component {
         list: []
     }
 
-    componentWillMount() { }
 
     componentWillReact() { }
 

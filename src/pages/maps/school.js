@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro';
-import { CoverView, ScrollView } from '@tarojs/components';
+import { CoverView, ScrollView, View, Text } from '@tarojs/components';
 import MyMap from '../../components/map/map';
 import { observer, inject } from '@tarojs/mobx';
 import { fetchContent, psuMapApi } from '../../utils/api';

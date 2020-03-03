@@ -1,8 +1,8 @@
 import Taro, { Component } from '@tarojs/taro';
-import { ScrollView } from '@tarojs/components';
+import { ScrollView, View, Text, CoverView } from '@tarojs/components';
 import MyMap from '../../components/map/map';
 import { fetchContent, catabusApi } from '../../utils/api';
-import { AtList, AtListItem } from "taro-ui"
+import { AtList } from "taro-ui"
 import { observer, inject } from '@tarojs/mobx'
 import '../../images/icons8-marker-40.png';
 import '../../images/icons8-bus-48.png';
