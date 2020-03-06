@@ -4,8 +4,8 @@ import MyMap from '../../components/map/map';
 import { fetchContent, catabusApi } from '../../utils/api';
 import { AtList } from "taro-ui"
 import { observer, inject } from '@tarojs/mobx'
-import '../../images/icons8-marker-40.png';
-import '../../images/icons8-bus-48.png';
+import markerIcon from'../../images/icons8-marker-40.png';
+import busIcon from '../../images/icons8-bus-48.png';
 import xmlparser from 'fast-xml-parser'
 import InfoFooter from '../../components/footerinfo';
 
@@ -225,7 +225,6 @@ class CataBusMap extends Component {
         var longitudeSum = 0.0;
         var latitudeSum = 0.0;
         var totalCoordinateCount = 0;
-
         var stopids = []
         let stopMarkers = stops.map(function (stop) {
             stopids.push(stop.StopId)
@@ -259,6 +258,7 @@ class CataBusMap extends Component {
         let centerLongitude = longitudeSum / totalCoordinateCount;
         let centerLatitude = latitudeSum / totalCoordinateCount;
         this.setState({ longitude: centerLongitude, latitude: centerLatitude })
+        console.log(stopids)
         this.stopIds = stopids;
         this.stopMarkers = stopMarkers;
         return stopMarkers;
@@ -328,7 +328,8 @@ class CataBusMap extends Component {
         })
     }
 
-    markerOnTap(event) {
+    markerOnTap = (event) => {
+        console.log(this.stopIds)
         let markerID = event.markerId
         if (this.stopIds.indexOf(markerID) >= 0) {
             this.getGetStopDeptureInfos(markerID)
@@ -393,7 +394,7 @@ class CataBusMap extends Component {
     }
 
     toDisplayTime(departureTime) {
-        let regex = /(?:\/Date\()(.*)(?:-0400\))/
+        let regex = /(?:\/Date\()(.*)(?:-.*\))/
         let time = departureTime.match(regex)[1];
         let date = new Date();
         date.setTime(time)
