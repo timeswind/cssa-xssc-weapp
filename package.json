@@ -26,7 +26,7 @@
 		"@tarojs/mobx": "2.0.5",
 		"@tarojs/mobx-h5": "2.0.5",
 		"@tarojs/mobx-rn": "2.0.5",
-		"@tarojs/rn-runner": "2.0.5",
+		"@tarojs/rn-runner": "^2.1.0",
 		"@tarojs/router": "2.0.5",
 		"@tarojs/taro": "2.0.5",
 		"@tarojs/taro-alipay": "2.0.5",
