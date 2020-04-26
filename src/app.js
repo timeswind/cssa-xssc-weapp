@@ -61,7 +61,6 @@ class App extends Component {
     Taro.getSystemInfo({
       success: res => {
         let modelmes = res.model
-        console.log("device:", modelmes)
         if (modelmes.search('iPhone X') != -1 || modelmes.search('iPhone12') != -1) {
           store.globalStore.setDevice("iPhone X")
         }
@@ -71,14 +70,6 @@ class App extends Component {
     })
   }
 
-  componentDidShow() { }
-
-  componentDidHide() { }
-
-  componentDidCatchError() { }
-
-  // 在 App 类中的 render() 函数没有实际作用
-  // 请勿修改此函数
   render() {
     return (
       <Provider store={store}>

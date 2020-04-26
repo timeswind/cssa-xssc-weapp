@@ -1,4 +1,4 @@
-import { Component } from '@tarojs/taro'
+import Taro, { Component } from '@tarojs/taro'
 import MarkdownReader from '../components/MarkdownReader';
 import { observer, inject } from '@tarojs/mobx'
 
@@ -10,8 +10,8 @@ class xssc extends Component {
         params: {}
     }
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.config = {
             navigationBarTitleText: '新生手册'
         }
@@ -33,10 +33,16 @@ class xssc extends Component {
     }
 
     componentWillMount() {
+        console.log("componentWillMount")
+    }
+
+    componentDidShow() {
+        console.log("componentDidShow", this.$router)
         if (this.$router && 'params' in this.$router && Object.keys(this.$router.params).length !== 0) {
             this.setState({ params: this.$router.params })
         }
     }
+
 
     onShareAppMessage(res) {
         const { globalStore: { currentSection, currentSectionTitle, toView } } = this.props
@@ -48,7 +54,6 @@ class xssc extends Component {
 
     render() {
         return (
-            
             <MarkdownReader config={this.readerConfig}
             params={this.state.params}
             showSearchBar={true}

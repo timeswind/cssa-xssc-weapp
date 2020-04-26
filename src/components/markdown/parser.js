@@ -3,7 +3,6 @@ var pinyin = require('tiny-pinyin')
 const Entities = require('html-entities').AllHtmlEntities;
 
 function parse(md, options) {
-	console.log("markdown parsing!")
 	const entities = new Entities();
 
 	var RemarkableParser = new Remarkable({

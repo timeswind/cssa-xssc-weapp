@@ -5,9 +5,8 @@ import { observer, inject } from '@tarojs/mobx'
 @inject('globalStore')
 @observer
 class xssc extends Component {
-
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.config = {
             navigationBarTitleText: 'PSU专业百科'
         }

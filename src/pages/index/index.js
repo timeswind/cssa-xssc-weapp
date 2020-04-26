@@ -7,7 +7,9 @@ import { observer, inject } from '@tarojs/mobx'
 @inject('globalStore')
 @observer
 class IndexPage extends Component {
-
+  constructor(props) {
+    super(props);
+  }
   config = {
     navigationBarTitleText: 'CSSA 新生手册'
   }

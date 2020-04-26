@@ -400,7 +400,6 @@ class MarkdownReader extends Component {
                     width={"90%"}
                 >
                     {menuData.map((menuItem, index) => {
-                        console.log("Entered");
                         return (<MenuRow key={menuItem.key}
                             index={index}
                             menuItem={menuItem}
